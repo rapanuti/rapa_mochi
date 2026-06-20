@@ -1,7 +1,56 @@
 # Make your own Dasai Mochi with Seeed Xiao ESP32S3 and SSD1306 128x32px IIC OLED display
 Make your own Dasai Mochi with Seeed Xiao ESP32S3 and SSD1306 128x32px IIC OLED display
 
+---
 
+## 🟢 Port a ESP32-WROOM-32 / ESP32 Dev Module (FASE 1: solo OLED) — ¡FUNCIONANDO!
+
+Este fork incluye una **versión mínima adaptada al ESP32-WROOM-32 clásico** (no requiere
+Seeed Xiao ESP32-S3). En esta primera fase la OLED enciende y reproduce la **animación de
+la cara Mochi** (90 cuadros 128×64). Sin audio, touch, batería, sensores ni WiFi/BT.
+
+> **Adaptación para ESP32-WROOM-32 por [Oswaldo José Anzola ("Jose")](https://github.com/rapanuti)** — fork: https://github.com/rapanuti/rapa_mochi · ✉️ oswaldojanzolag@gmail.com
+> Basado 100% en el proyecto original de **upir** (ver créditos abajo).
+
+### 📂 Sketch listo para usar
+[`minimal_esp32_wroom32_oled/`](minimal_esp32_wroom32_oled/) → abre **`minimal_esp32_wroom32_oled.ino`**
+(guía completa en [`minimal_esp32_wroom32_oled/README.md`](minimal_esp32_wroom32_oled/README.md)).
+
+### 🔌 Hardware y cableado verificados
+| Componente | Detalle |
+|------------|---------|
+| Placa | ESP32 DevKit / **ESP32-WROOM-32** (chip ESP32-D0WD-V3 rev v3.1) |
+| Pantalla | OLED **SSD1306 128×64** I2C, dirección **0x3C** |
+
+| OLED | ESP32-WROOM-32 |
+|------|----------------|
+| VCC / VDD | **3V3** |
+| GND | **GND** |
+| SDA | **GPIO21** |
+| SCL / SCK | **GPIO22** |
+
+### ⚙️ Qué cambió respecto al original (Xiao ESP32-S3 → WROOM-32)
+- **El código de animación no se modificó**: son los mismos 90 frames y la misma librería **U8g2**.
+- El proyecto original **no usa PSRAM, USB nativo, touch, audio ni pines del S3**, por lo que
+  portarlo solo exige seleccionar la placa **ESP32 Dev Module** en el IDE.
+- Se añadió: configuración **explícita de pines I2C (SDA=21 / SCL=22)**, dirección `0x3C`,
+  reloj de bus a 400 kHz, **control de FPS** (`ANIM_FPS`), un **splash de arranque** y mensajes
+  por el **monitor serie (115200)** para depurar.
+- Se dejaron **stubs comentados** (`PIN_SPEAKER`, `PIN_VIBRATOR`, `PIN_TOUCH`, `PIN_BATTERY_ADC`)
+  como puntos de integración para fases futuras (parlante/piezo, motor vibrador, sensor, batería 18650).
+
+### ▶️ Cómo compilar y subir (Arduino IDE)
+1. Instala el **soporte de placas ESP32** (Gestor de tarjetas → *esp32 by Espressif Systems*).
+2. Instala la librería **U8g2** (de *oliver / olikraus*) — única dependencia.
+3. Abre `minimal_esp32_wroom32_oled/minimal_esp32_wroom32_oled.ino`.
+4. `Herramientas ▸ Placa` → **ESP32 Dev Module**; selecciona el **Puerto**.
+5. **Subir** → verás el splash `Mochi / ESP32-WROOM-32` y luego la cara Mochi animada en bucle.
+
+> El sketch original para Xiao ESP32-S3 (`ARDUINO_xiao_oled_dasai_mochi/`) se conserva intacto.
+
+---
+
+## Proyecto original (upir)
 
 **YouTube video: https://youtu.be/QOoszpg0BsM**
 
