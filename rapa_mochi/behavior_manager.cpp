@@ -8,6 +8,7 @@
 
 static bool     enabled  = true;
 static bool     demo     = false;
+static bool     randomM  = false;
 static uint8_t  demoIdx  = 1;
 static uint32_t lastTick = 0;
 
@@ -24,8 +25,10 @@ void behaviorSetEnabled(bool on) {
 
 bool behaviorEnabled() { return enabled; }
 
-void behaviorSetDemo(bool on) { demo = on; demoIdx = 1; lastTick = 0; }
-bool behaviorDemo()           { return demo; }
+void behaviorSetDemo(bool on)   { demo = on; if (on) randomM = false; demoIdx = 1; lastTick = 0; }
+bool behaviorDemo()             { return demo; }
+void behaviorSetRandom(bool on) { randomM = on; if (on) demo = false; lastTick = 0; }
+bool behaviorRandom()           { return randomM; }
 
 void behaviorUpdate(uint32_t now) {
   // Modo demo: recorre TODAS las caras (1..COUNT-1), ~3 s cada una.
@@ -34,6 +37,17 @@ void behaviorUpdate(uint32_t now) {
       lastTick = now;
       emotionRequestFor((Emotion)demoIdx, 3000, /*force=*/true);
       if (++demoIdx >= (uint8_t)Emotion::COUNT) demoIdx = 1;
+    }
+    return;
+  }
+
+  // Modo aleatorio: emocion al azar con duracion al azar (3-8 s), en bucle.
+  if (randomM) {
+    if (!emotionActive() && (now - lastTick) >= 200) {
+      lastTick = now;
+      Emotion  e  = (Emotion)(1 + random(0, (long)Emotion::COUNT - 1));   // 1..COUNT-1
+      uint16_t ms = (uint16_t)random(3000, 8001);
+      emotionRequestFor(e, ms, /*force=*/true);
     }
     return;
   }

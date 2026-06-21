@@ -101,6 +101,10 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **Constructor visual de secuencias**: en vez de escribir, eliges cada emoción de un menú
+  y su duración (5/10/15/20 s). Las secuencias ahora se reproducen en **loop**.
+- **Sección "Aleatorio"**: el Mochi elige emociones al azar con duración variable (3–8 s),
+  en bucle (toggle ON/OFF en el panel).
 - **Panel web rediseñado estilo macOS**: tarjetas blancas redondeadas, fuente del sistema,
   acento azul, chips y toggles ON/OFF resaltados. Se añadió `<meta charset="utf-8">` (el
   emoji del título ya se ve bien).

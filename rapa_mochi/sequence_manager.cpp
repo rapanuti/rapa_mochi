@@ -9,6 +9,7 @@ static String   names[SEQ_MAX];
 static String   datas[SEQ_MAX];
 
 static bool     playing   = false;
+static bool     loopMode  = false;   // repetir la secuencia al terminar
 static String   playData;        // datos en reproduccion
 static int      stepIdx   = 0;
 static uint32_t stepStart = 0;
@@ -61,23 +62,29 @@ static bool startStep() {
   return false;   // stepIdx fuera de rango -> fin
 }
 
-void seqPlayData(const String& data) {
+void seqPlayData(const String& data, bool loop) {
   playData = data;
   stepIdx  = 0;
+  loopMode = loop;
   playing  = startStep();
 }
 
-void seqPlay(int i) {
-  if (i >= 0 && i < SEQ_MAX && datas[i].length() > 0) seqPlayData(datas[i]);
+void seqPlay(int i, bool loop) {
+  if (i >= 0 && i < SEQ_MAX && datas[i].length() > 0) seqPlayData(datas[i], loop);
 }
 
 void seqUpdate(uint32_t now) {
   if (!playing) return;
   if (now - stepStart >= stepDur) {
     stepIdx++;
-    if (!startStep()) {           // no hay mas pasos -> termina
-      playing = false;
-      emotionForceDefault();      // vuelve YA al estado base
+    if (!startStep()) {                 // no hay mas pasos
+      if (loopMode) {                   // loop: reinicia desde el primero
+        stepIdx = 0;
+        if (!startStep()) { playing = false; emotionForceDefault(); }
+      } else {
+        playing = false;
+        emotionForceDefault();          // vuelve YA al estado base
+      }
     }
   }
 }
