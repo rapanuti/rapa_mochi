@@ -1,5 +1,7 @@
 # Hardware
 
+> 🔌 ¿Buscas cómo conectar todo? Mira el **[diagrama de conexiones](wiring.md)**.
+
 ## Placa y pantalla (probado)
 
 | Componente | Detalle |
