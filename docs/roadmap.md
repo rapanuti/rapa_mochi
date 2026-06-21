@@ -23,11 +23,11 @@ De un sketch visual a un companion modular, configurable e interactivo.
 ## Fase 5 — Secuencias de emociones ✅
 - Crear/nombrar/guardar secuencias (NVS) y ejecutarlas desde la web (`emo:ms;emo:ms;...`). Pendiente: dispararlas desde botones/eventos (Fases 6–7).
 
-## Fase 6 — Botones
-- 2–3 botones configurables (GPIO 25/26/27); asignar acciones desde la web.
+## Fase 6 — Botones ✅
+- 3 botones configurables (GPIO 25/26/27) con acción asignable desde la web (emoción/secuencia/estado). Pines sin botón leen HIGH (seguro).
 
-## Fase 7 — Reglas / eventos
-- Asociar eventos con emociones; reglas para temperatura, MQTT, touch/piezo, batería.
+## Fase 7 — Reglas / eventos ✅
+- `event_manager` asocia eventos con emociones/secuencias. Reglas por defecto para wifi, piezo, temperatura, batería y MQTT (estas últimas se activarán al integrar su hardware/infra).
 
 ## Fase 8 — MQTT
 - Integración con **n8n / Home Assistant / Node-RED**; recibir comandos y publicar estado.
