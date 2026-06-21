@@ -11,6 +11,7 @@
 #include "storage_manager.h"
 #include "event_manager.h"
 #include "behavior_manager.h"
+#include "notice_manager.h"
 
 static WebServer web(80);
 static bool      started = false;
@@ -138,6 +139,14 @@ static String pageStatus() {
        "<a class='btn' href='/behavior?on=0'>OFF</a></p>";
   h += "</fieldset>";
 
+  // --- Mensaje en la OLED (texto / IA externa) ---
+  h += "<fieldset><legend><b>Mensaje en pantalla</b></legend>";
+  h += "<form action='/notice' method='GET'>"
+       "<input name='text' size='28' placeholder='Hola, soy Rapa Mochi'> "
+       "<button type='submit'>Mostrar</button></form>";
+  h += "<small>Tambien por MQTT: publica <code>text:tu mensaje</code> en el topic de entrada.</small>";
+  h += "</fieldset>";
+
   h += "</body></html>";
   return h;
 }
@@ -206,6 +215,11 @@ static void handleBehavior() {
   redirectHome();
 }
 
+static void handleNotice() {
+  if (web.hasArg("text")) noticeShow(web.arg("text"));
+  redirectHome();
+}
+
 void webBegin() {
   if (started) return;
   web.on("/", handleRoot);
@@ -217,6 +231,7 @@ void webBegin() {
   web.on("/seqsave", handleSeqSave);
   web.on("/btnset", handleBtnSet);
   web.on("/behavior", handleBehavior);
+  web.on("/notice", handleNotice);
   web.begin();
   started = true;
   Serial.print(F("[WEB] panel en http://")); Serial.println(WiFi.localIP());
