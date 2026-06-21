@@ -1,0 +1,9 @@
+# Credenciales WiFi (nunca subir a git)
+secrets.h
+**/secrets.h
+
+# Artefactos de compilacion de Arduino / PlatformIO
+build/
+.pio/
+*.bin
+*.elf
