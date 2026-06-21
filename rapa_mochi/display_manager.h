@@ -26,3 +26,4 @@ void dispCircle(int x, int y, int r);               // circulo contorno
 void dispEllipseFilled(int x, int y, int rx, int ry);
 void dispTriangle(int x0, int y0, int x1, int y1, int x2, int y2);
 void dispTextSmall(int x, int y, const char* s);    // texto fuente 6x10
+const uint8_t* dispBuffer();            // buffer interno U8g2 (1024 B, 128x64) para exportar

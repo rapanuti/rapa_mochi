@@ -99,6 +99,12 @@ changelog corresponde a una o varias de esas ramas ya integradas.
   (con plantilla `secrets.h.example`), para que la contraseña **nunca se suba** al repo.
   Se añadió `.gitignore` (incluye `secrets.h` y artefactos de compilación).
 
+### Añadido
+
+- **Miniatura de cada cara en el panel**: los botones de "Probar emoción" muestran una
+  vista previa real de cómo se ve en la OLED (endpoint `/face?e=…` que renderiza la cara
+  y la sirve como BMP 1-bit). Generar la miniatura no altera la pantalla física.
+
 ### Cambiado
 
 - **Probar emoción ahora es permanente (manual)**: al pulsar una emoción se queda fija
