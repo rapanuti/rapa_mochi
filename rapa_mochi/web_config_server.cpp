@@ -139,6 +139,20 @@ static String pageStatus() {
   h += pill("Saludo inicial", "/greeting", storageGetInt("greet", 1));
   h += "</div>";
 
+  // --- WiFi ---
+  h += "<div class='card'><h2>WiFi</h2>";
+  h += "<div class='row'><span class='muted'>Red actual</span><b>" + WiFi.SSID() + "</b></div>";
+  h += "<form action='/setwifi' method='GET'>"
+       "<label>Cambiar de red (nombre / SSID)</label>"
+       "<input name='ssid' placeholder='Nombre de la red'>"
+       "<label>Contrasena</label>"
+       "<input name='pass' type='password' placeholder='Contrasena'>"
+       "<button type='submit'>Guardar y reiniciar</button></form>";
+  h += "<a class='chip' href='/forgetwifi'>Olvidar red y abrir portal</a>";
+  h += "<small> Para elegir de una LISTA de redes, usa 'Olvidar red': el Mochi crea la red "
+       "<b>RapaMochi_Setup</b> con el escaner de WiFi.</small>";
+  h += "</div>";
+
   // --- Secuencias ---
   h += "<div class='card'><h2>Secuencias</h2>";
   for (int i = 0; i < seqSlots(); i++) {
@@ -303,6 +317,36 @@ static void handleNotice() {
   redirectHome();
 }
 
+static const char REBOOT_HTML[] PROGMEM =
+  "<!DOCTYPE html><html><head><meta charset='utf-8'>"
+  "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+  "<style>body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;"
+  "color:#1d1d1f;text-align:center;padding:48px 16px}</style></head><body>";
+
+// Guardar una red nueva desde el panel y reiniciar para conectar.
+static void handleSetWifi() {
+  if (web.hasArg("ssid") && web.arg("ssid").length() > 0) {
+    storageSaveWiFi(web.arg("ssid"), web.arg("pass"));
+    storagePutInt("newcfg", 1);
+    String p = FPSTR(REBOOT_HTML);
+    p += F("<h2>&#10003; Guardado</h2><p>Reiniciando para conectar a la nueva red...</p></body></html>");
+    web.send(200, "text/html", p);
+    delay(600);
+    ESP.restart();
+  } else redirectHome();
+}
+
+// Olvidar la red guardada y reiniciar -> abre el portal RapaMochi_Setup.
+static void handleForgetWifi() {
+  storageClearWiFi();
+  String p = FPSTR(REBOOT_HTML);
+  p += F("<h2>WiFi olvidado</h2><p>Reiniciando. Conectate a <b>RapaMochi_Setup</b> "
+         "para elegir tu red.</p></body></html>");
+  web.send(200, "text/html", p);
+  delay(600);
+  ESP.restart();
+}
+
 // Miniatura de una emocion como BMP 1-bit 128x64 (blanco sobre negro).
 // Se dibuja en el buffer de la OLED; como esto corre ANTES del refresco del loop,
 // el siguiente render lo sobreescribe y la pantalla real no se altera.
@@ -354,6 +398,8 @@ void webBegin() {
   web.on("/behavior", handleBehavior);
   web.on("/demo", handleDemo);
   web.on("/notice", handleNotice);
+  web.on("/setwifi", handleSetWifi);
+  web.on("/forgetwifi", handleForgetWifi);
   web.on("/face", handleFace);
   web.begin();
   started = true;

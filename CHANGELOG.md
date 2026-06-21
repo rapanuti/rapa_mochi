@@ -15,6 +15,9 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **WiFi desde el panel principal**: tarjeta "WiFi" con la red actual, cambiar de red
+  (SSID + contraseña → guardar y reiniciar) y "olvidar red" (reinicia y abre el portal
+  con el escáner de redes). Ya no hace falta forzar el portal para cambiar de WiFi.
 - **Portal cautivo mejorado**: página con estilo limpio (macOS), lista de redes detectadas
   para **seleccionar**, campo de SSID manual + contraseña, y botón **"volver a escanear"**.
   Al guardar una red nueva y reconectar, la OLED muestra **"Nueva red!"** + IP (cara feliz).
