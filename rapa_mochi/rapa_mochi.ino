@@ -29,14 +29,19 @@
 #include <U8g2lib.h> // library for drawing images to the OLED display
 #include <Wire.h> // library requires for IIC communication
 #include <WiFi.h> // FASE 1: conexion WiFi del ESP32
+#include "secrets.h" // tus credenciales WiFi (archivo NO versionado, ver secrets.h.example)
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); // initialization for the used OLED display
 
 // ===========================================================================
-//  FASE 1 - WiFi: edita estas dos variables con los datos de TU red
+//  FASE 1 - WiFi: las credenciales viven en secrets.h (NO se sube a git).
+//  Copia "secrets.h.example" a "secrets.h" y pon ahi los datos de TU red.
 // ===========================================================================
-const char* ssid     = "TU_WIFI";
-const char* password = "TU_PASSWORD";
+const char* ssid     = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
+
+// Tiempo que se muestra el estado del WiFi (IP) en la OLED al arrancar.
+#define WIFI_INFO_MS  10000   // 10 s para que de tiempo a leer la IP
 
 // Intenta conectar al WiFi de forma ACOTADA (no bloquea para siempre).
 // Maximo ~10 s (20 intentos x 500 ms); si falla, el Mochi arranca igual.
@@ -63,7 +68,7 @@ void conectarWiFi() {
   }
 }
 
-// Muestra el resultado del WiFi en la OLED ~2 s antes de la animacion.
+// Muestra el resultado del WiFi en la OLED ~10 s antes de la animacion.
 void mostrarEstadoWiFi() {
   u8g2.clearBuffer();
   u8g2.setFont(u8g2_font_6x10_tr);
@@ -76,7 +81,7 @@ void mostrarEstadoWiFi() {
     u8g2.drawStr(0, 40, "Sigo sin red...");
   }
   u8g2.sendBuffer();
-  delay(2000); // muestra el estado y luego empieza la animacion
+  delay(WIFI_INFO_MS); // muestra el estado (IP) y luego empieza la animacion
 }
 
 // ===========================================================================
@@ -6261,7 +6266,7 @@ void setup(void) {
   u8g2.begin();           // start the u8g2 library (OLED lista)
 
   conectarWiFi();         // FASE 1: intenta conectar (acotado, no congela el Mochi)
-  mostrarEstadoWiFi();    // muestra WiFi OK + IP, o WiFi FAIL, ~2 s en la OLED
+  mostrarEstadoWiFi();    // muestra WiFi OK + IP, o WiFi FAIL, ~10 s en la OLED
 }
 
 

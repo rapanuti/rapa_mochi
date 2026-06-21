@@ -90,13 +90,20 @@ El proyecto fue **probado correctamente** con esta configuración en **Arduino I
 > haya WiFi conectado, como indicador visual. Si en tu placa el LED está en otro pin,
 > cambia `#define LED_WIFI 2` al inicio del sketch.
 
-Conecta el ESP32 a tu WiFi cambiando estas dos **variables editables** al inicio del sketch
-(cerca de la línea donde se inicializa la OLED):
+Tus credenciales **no van dentro del `.ino`**, sino en un archivo aparte llamado
+**`secrets.h`** que **git ignora** (así tu contraseña nunca se sube a GitHub):
 
-```cpp
-const char* ssid     = "TU_WIFI";
-const char* password = "TU_PASSWORD";
-```
+1. En la carpeta `rapa_mochi/`, copia `secrets.h.example` y renómbralo a **`secrets.h`**.
+2. Edita `secrets.h` con los datos de tu red **(WiFi de 2.4 GHz)**:
+   ```cpp
+   #define WIFI_SSID      "TU_WIFI"
+   #define WIFI_PASSWORD  "TU_PASSWORD"
+   ```
+3. Compila y sube. Al arrancar verás el estado del WiFi en la OLED durante **~10 s**
+   (configurable con `#define WIFI_INFO_MS` en el sketch) y luego la animación.
+
+> 💡 La IP también se imprime en el **Monitor Serie** (115200): ábrelo en Arduino IDE y
+> verás `IP: 192.168.x.x` al arrancar, por si no alcanzas a leerla en la pantalla.
 
 El resto de esta sección explica **cómo funciona** y el ejemplo mínimo de referencia.
 

@@ -29,8 +29,17 @@ changelog corresponde a una o varias de esas ramas ya integradas.
   **Conexión WiFi** (variables editables + ejemplo mínimo + integración sin romper
   las animaciones) y **roadmap** de 8 fases.
 
+### Seguridad
+
+- Las credenciales WiFi se movieron a un archivo **`secrets.h` ignorado por git**
+  (con plantilla `secrets.h.example`), para que la contraseña **nunca se suba** al repo.
+  Se añadió `.gitignore` (incluye `secrets.h` y artefactos de compilación).
+
 ### Cambiado
 
+- El estado del WiFi (IP) ahora se muestra en la OLED **~10 s** al arrancar
+  (antes 2 s), configurable con `#define WIFI_INFO_MS`. La IP también sale por el
+  Monitor Serie (115200).
 - **README principal reescrito con identidad propia** (distinto al original de upir):
   bilingüe **ES + EN**, enfocado a **makers principiantes**, con el gancho de
   "**compañero de escritorio Mochi**", portada con GIF, tabla de hardware, estructura
