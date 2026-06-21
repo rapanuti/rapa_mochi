@@ -7,7 +7,12 @@
 
 enum class Emotion : uint8_t {
   IDLE, HAPPY, SAD, SURPRISED, ANGRY, SLEEPY, HOT, COLD,
-  THINKING, NOTIFICATION, ERROR, WIFI_OK, WIFI_FAIL, COUNT
+  THINKING, NOTIFICATION, ERROR, WIFI_OK, WIFI_FAIL,
+  // --- Catalogo Dasai Mochi (Gen 3) ---
+  SMILE, LAUGH, UWU, RASPBERRY, SAKURA, RAINBOW, DUMB_LOVE, LOVE,
+  DISTRACTED, SNEEZE, SQUINT, LOOK_DOWN, SHIFT, BEE, GTR_RAIN,
+  NEON_TUBE, PONG, ROTATION, GFORCE, SPLAT,
+  COUNT
 };
 
 struct EmotionDef {
@@ -23,6 +28,7 @@ bool        emotionRequestFor(Emotion e, uint16_t ms, bool force = false); // fo
 void        emotionForceDefault();                   // vuelve YA a la emocion base
 Emotion     emotionCurrent();
 bool        emotionActive();                          // hay cara procedural vigente
+bool        emotionTransitioning(uint32_t now);       // hay un parpadeo de transicion en curso
 void        emotionRender(uint32_t now);              // dibuja la cara actual
 const char* emotionName(Emotion e);
 Emotion     emotionFromName(const String& s);         // IDLE si no coincide

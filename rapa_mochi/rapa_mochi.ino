@@ -159,9 +159,9 @@ void loop() {
       eventUpdate(now);                        // reglas temporizadas (reservado)
       behaviorUpdate(now);                     // personalidad autonoma (Fase 12)
       emotionUpdate(now);                      // expira la emocion -> base
-      if      (noticeActive(now)) noticeRender();    // mensaje (IA/n8n/web) tiene prioridad
-      else if (emotionActive())   emotionRender(now);// cara procedural (happy/sad/...)
-      else                        animRenderNext();  // animacion Mochi (idle, 90 frames)
+      if      (noticeActive(now))                          noticeRender();    // mensaje (IA/n8n/web)
+      else if (emotionActive() || emotionTransitioning(now)) emotionRender(now); // cara + transicion
+      else                                                 animRenderNext();  // animacion Mochi idle
 
       // Managers de hardware (no-op si su *_ENABLED es 0):
       mqttUpdate();
