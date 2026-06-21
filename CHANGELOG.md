@@ -24,6 +24,9 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- `LICENSE`: se añadió la línea de copyright de la adaptación
+  (`Copyright (c) 2026 Oswaldo José Anzola`) conservando la original de upir,
+  como exige la licencia MIT.
 - El sketch `rapa_mochi/` ahora apunta al **ESP32-WROOM-32 clásico** en lugar de
   Seeed Xiao ESP32-S3 (los pines I2C por defecto SDA=21 / SCL=22 ya son los de la
   WROOM-32; el código no requirió cambios funcionales).
