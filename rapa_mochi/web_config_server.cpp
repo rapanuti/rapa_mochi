@@ -228,13 +228,16 @@ static void handleGreeting() {
   redirectHome();
 }
 
+// Antes de reproducir una secuencia, apaga los modos automaticos (solo uno activo).
+static void stopAutoModes() { behaviorSetDemo(false); behaviorSetRandom(false); }
+
 static void handleSeqPlay() {
-  if (web.hasArg("i")) seqPlay(web.arg("i").toInt(), /*loop=*/true);
+  if (web.hasArg("i")) { stopAutoModes(); seqPlay(web.arg("i").toInt(), /*loop=*/true); }
   redirectHome();
 }
 
 static void handleSeqTest() {
-  if (web.hasArg("data")) seqPlayData(web.arg("data"), /*loop=*/true);
+  if (web.hasArg("data")) { stopAutoModes(); seqPlayData(web.arg("data"), /*loop=*/true); }
   redirectHome();
 }
 
@@ -253,6 +256,7 @@ static void handleSeqBuild() {
     int slot  = web.hasArg("i") ? web.arg("i").toInt() : 0;
     String nm = web.arg("name"); if (nm.length() == 0) nm = "secuencia";
     seqSave(slot, nm, data);
+    stopAutoModes();
     seqStop();
     seqPlayData(data, /*loop=*/true);
   }

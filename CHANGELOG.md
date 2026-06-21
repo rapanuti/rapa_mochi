@@ -101,6 +101,11 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **Modos exclusivos**: secuencia, modo aleatorio, demo y personalidad ahora se excluyen
+  (solo uno activo a la vez). Iniciar una secuencia apaga aleatorio/demo, y activar
+  aleatorio/demo detiene la secuencia. Esto arregla que el **modo aleatorio no disparara**
+  cuando había una secuencia en loop manteniendo una emoción activa.
+- La emoción de prueba del panel ahora dura **9 s** (`WEB_TEST_MS`, antes 3 s).
 - **Fix de condición de carrera en secuencias**: durante una secuencia la emoción se
   pide **permanente** (sin auto-expiración) y la secuencia controla el tiempo con su
   propio reloj, evitando el doble temporizador que hacía que los tiempos no se
