@@ -50,7 +50,9 @@ static bool startStep() {
         String emo = (c >= 0) ? tok.substring(0, c) : tok;
         uint16_t ms = (c >= 0) ? (uint16_t)tok.substring(c + 1).toInt() : 1000;
         if (ms == 0) ms = 1000;
-        emotionRequestFor(emotionFromName(emo), ms, /*force=*/true);  // ignora prioridad
+        // La emocion se pide PERMANENTE (dur=0): la SECUENCIA controla el tiempo
+        // con stepDur. Asi se evita la carrera (la emocion ya no expira sola).
+        emotionRequestFor(emotionFromName(emo), 0, /*force=*/true);
         stepStart = millis();
         stepDur   = ms;
         return true;
@@ -90,4 +92,10 @@ void seqUpdate(uint32_t now) {
 }
 
 bool seqPlaying() { return playing; }
-void seqStop()    { playing = false; }
+
+void seqStop() {
+  if (playing) {
+    playing = false;
+    emotionForceDefault();   // la ultima emocion era permanente: vuelve a la base
+  }
+}
