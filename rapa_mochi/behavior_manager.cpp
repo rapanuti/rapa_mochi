@@ -5,6 +5,7 @@
 #include "behavior_manager.h"
 #include "emotion_manager.h"
 #include "storage_manager.h"
+#include "sequence_manager.h"   // para saber si hay una secuencia en curso
 
 static bool     enabled  = true;
 static bool     demo     = false;
@@ -31,6 +32,10 @@ void behaviorSetRandom(bool on) { randomM = on; if (on) demo = false; lastTick =
 bool behaviorRandom()           { return randomM; }
 
 void behaviorUpdate(uint32_t now) {
+  // EXCLUSIVIDAD: si hay una secuencia en curso, ella manda; demo/aleatorio/
+  // personalidad quedan suspendidos hasta que la secuencia se detenga.
+  if (seqPlaying()) return;
+
   // Tiempos disponibles (igual que el constructor de secuencias).
   static const uint16_t TIMES[] = { 5000, 10000, 15000, 20000 };
 
