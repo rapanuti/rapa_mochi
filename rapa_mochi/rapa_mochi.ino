@@ -2,9 +2,6 @@
 // Pines I2C por defecto del ESP32-WROOM-32: SDA = GPIO21, SCL = GPIO22
 
 // basado en el proyecto original de upir, 2025 (placa original: Seeed Xiao ESP32-S3)
-// youtube channel: https://www.youtube.com/upir_upir
-
-// YouTube Video: https://youtu.be/QOoszpg0BsM
 // Source Files: https://github.com/upiir/esp32s3_oled_dasai_mochi
 // Wokwi sketch: https://wokwi.com/projects/426385808890236929
 
@@ -26,13 +23,6 @@
 // Breadboard wires: https://s.click.aliexpress.com/e/_Dkbngin
 // Rive Application (animations): https://rive.app/
 // RoboEyes Library: https://github.com/FluxGarage/RoboEyes
-
-// Related videos with OLED display:
-// Arduino + OLED displays: https://www.youtube.com/playlist?list=PLjQRaMdk7pBZ1UV3IL5ol8Qc7R9k-kwXA
-// Image to OLED in 60 seconds // https://www.youtube.com/watch?v=Lw0Aaoo3YSY
-// Smaller & Faster Arduino? // https://youtu.be/4GfPQoIRqW8
-// Tiny OLED (72x40px OLED) // https://youtu.be/caHcaUoQ2kg
-// ESP32 with Tiny OLED: https://youtu.be/icD-hER8YQ8
 
 
 #include <Arduino.h>
