@@ -1,4 +1,4 @@
-# minimal_esp32_wroom32_oled — Dasai Mochi (FASE 1: solo OLED)
+# minimal_rapa_mochi — Dasai Mochi (FASE 1: solo OLED)
 
 Versión mínima del proyecto **Dasai Mochi** de [upir](https://github.com/upiir/esp32s3_oled_dasai_mochi),
 adaptada de la placa original **Seeed Xiao ESP32-S3** a un **ESP32-WROOM-32 / ESP32 Dev Module**.
@@ -36,7 +36,7 @@ En esta fase **solo se enciende la OLED y se reproduce la animación de la cara 
    - `Herramientas ▸ Placa ▸ Gestor de tarjetas…` → instala **esp32 (Espressif Systems)**.
 2. **Librería** (`Herramientas ▸ Administrar librerías…`):
    - Instala **U8g2** de *oliver* (olikraus). Es la única dependencia.
-3. Abre el archivo **`minimal_esp32_wroom32_oled.ino`** (esta carpeta).
+3. Abre el archivo **`minimal_rapa_mochi.ino`** (esta carpeta).
 4. `Herramientas ▸ Placa` → **ESP32 Dev Module**.
 5. Selecciona el **Puerto** correcto.
 6. Pulsa **Subir (Upload)** ➜ al reiniciar verás el splash `Mochi / ESP32-WROOM-32` y luego la animación.
@@ -46,7 +46,7 @@ En esta fase **solo se enciende la OLED y se reproduce la animación de la cara 
 ## Opción B — PlatformIO
 
 ```bash
-cd minimal_esp32_wroom32_oled
+cd minimal_rapa_mochi
 pio run -t upload      # compila + sube
 pio device monitor     # 115200 baud
 ```

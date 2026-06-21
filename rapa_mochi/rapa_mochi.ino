@@ -1,34 +1,12 @@
-// ===========================================================================
-//  Dasai Mochi  -  VERSION MINIMA PARA ESP32-WROOM-32 (ESP32 Dev Module)
-//  minimal_esp32_wroom32_oled  -  FASE 1: solo display + animacion Mochi
-// ===========================================================================
-//
-//  Adaptacion para ESP32-WROOM-32 por: Oswaldo Jose Anzola ("Jose")
-//  Fork / referencia:  https://github.com/rapanuti/rapa_mochi
-//  Contacto: oswaldojanzolag@gmail.com
-//
-//  Basado en el proyecto original "Dasai Mochi" de upir (2025):
-//    - YouTube: https://www.youtube.com/upir_upir   (video: https://youtu.be/QOoszpg0BsM)
-//    - Fuente original: https://github.com/upiir/esp32s3_oled_dasai_mochi
-//    - Wokwi: https://wokwi.com/projects/426385808890236929
-//
-//  QUE CAMBIO RESPECTO AL ORIGINAL (Xiao ESP32-S3 -> ESP32-WROOM-32):
-//    * El codigo de animacion NO se toco: son los mismos 90 frames 128x64.
-//    * El proyecto original NO usa PSRAM, USB nativo, touch, audio ni pines
-//      del S3, asi que portarlo solo requiere elegir la placa correcta.
-//    * Se anadio configuracion explicita de pines I2C (SDA=21 / SCL=22),
-//      direccion 0x3C, velocidad de bus y un control de FPS.
-//    * Se anadio una pantalla de arranque (splash) y manejo del caso
-//      "display no encontrado" para depurar facil por el monitor serie.
-//
-//  HARDWARE OBJETIVO (confirmado por el usuario):
-//    Placa : ESP32 DevKit / ESP32-WROOM-32 (chip ESP32-D0WD-V3 rev v3.1)
-//    OLED  : SSD1306 128x64 I2C, direccion 0x3C
-//    Wiring: SDA -> GPIO21 | SCL -> GPIO22 | VCC -> 3V3 | GND -> GND
-//
-//  Modulos NO incluidos todavia (parlante, piezo, motor vibrador, bateria,
-//  cargador, sensor/touch): ver los STUBS comentados mas abajo (FASE 2+).
-// ===========================================================================
+// Dasai Mochi robot using ESP32-WROOM-32 (clasico) and 128x64 SSD1306 IIC OLED Display
+// Pines I2C por defecto del ESP32-WROOM-32: SDA = GPIO21, SCL = GPIO22
+
+// basado en el proyecto original de upir, 2025 (placa original: Seeed Xiao ESP32-S3)
+// youtube channel: https://www.youtube.com/upir_upir
+
+// YouTube Video: https://youtu.be/QOoszpg0BsM
+// Source Files: https://github.com/upiir/esp32s3_oled_dasai_mochi
+// Wokwi sketch: https://wokwi.com/projects/426385808890236929
 
 // Links from the video:
 // Do you like this video? You can buy me a coffee ☕: https://www.buymeacoffee.com/upir
@@ -61,34 +39,7 @@
 #include <U8g2lib.h> // library for drawing images to the OLED display
 #include <Wire.h> // library requires for IIC communication
 
-// ----------------------------------------------------------------------------
-//  CONFIGURACION (edita aqui si tu hardware difiere) - FASE 1
-// ----------------------------------------------------------------------------
-#define OLED_SDA_PIN     21      // SDA -> GPIO21  (ESP32-WROOM-32 por defecto)
-#define OLED_SCL_PIN     22      // SCL -> GPIO22  (ESP32-WROOM-32 por defecto)
-#define OLED_I2C_ADDR    0x3C    // direccion detectada por el usuario (0x3D en algunos modulos)
-#define OLED_BUS_HZ      400000  // 400 kHz = "fast mode" I2C, animacion fluida
-#define ANIM_FPS         24      // cuadros por segundo de la animacion Mochi (sube/baja a gusto)
-
-// Rotacion del panel: U8G2_R0 = setRotation(0). Alternativas: R1 (90), R2 (180), R3 (270).
-// Constructor del display (128x64, HW I2C). NO cambiar el modelo: SSD1306 NONAME = 0x3C.
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); // initialization for the used OLED display
-
-// ----------------------------------------------------------------------------
-//  STUBS PARA FASES FUTURAS  -  NO BORRAR. Descomentar cuando conectes el HW.
-//  (parlante / piezo / motor vibrador / bateria / sensor-touch)
-//  Se dejan apagados a proposito: la FASE 1 es SOLO la pantalla.
-// ----------------------------------------------------------------------------
-// #define PIN_SPEAKER      25   // FASE 2: parlante o piezo (usar ledcWriteTone / tone)
-// #define PIN_VIBRATOR     26   // FASE 2: motor vibrador de vape (via transistor!)
-// #define PIN_TOUCH        4    // FASE 2: sensor capacitivo (touchRead en pines TOUCH del ESP32)
-// #define PIN_BATTERY_ADC  34   // FASE 3: lectura de bateria 18650 por divisor resistivo (ADC1)
-//
-// void setupAudio()    { /* FASE 2: pinMode(PIN_SPEAKER, OUTPUT); ledcAttach(...) */ }
-// void setupVibrator() { /* FASE 2: pinMode(PIN_VIBRATOR, OUTPUT); */ }
-// void setupTouch()    { /* FASE 2: nada que inicializar; usar touchRead(PIN_TOUCH) */ }
-// void readBattery()   { /* FASE 3: analogReadMilliVolts(PIN_BATTERY_ADC) * factor_divisor */ }
-// ----------------------------------------------------------------------------
 
 
 // the code below was generated using the image2cpp website from images from Photopea/Rive
@@ -6224,53 +6175,12 @@ const unsigned char* epd_bitmap_allArray[90] = {
 
 int frame; // which image to display on the display
 
-const unsigned long FRAME_INTERVAL_MS = 1000UL / ANIM_FPS; // ms entre cuadros (ver ANIM_FPS arriba)
-unsigned long lastFrameMs = 0;                              // marca de tiempo del ultimo cuadro
-
 void setup(void) {
-  Serial.begin(115200);
-  delay(200);
-  Serial.println();
-  Serial.println(F("[Mochi] Arranque - ESP32-WROOM-32 / SSD1306 128x64"));
-
-  // I2C explicito en los pines del WROOM-32 (SDA=21, SCL=22).
-  // En el ESP32 clasico estos ya son los pines por defecto, pero lo fijamos
-  // de forma explicita para no depender del default de la placa.
-  Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
-
-  // U8g2 usa direccion I2C de 8 bits: (0x3C << 1) = 0x78. setI2CAddress lo deja explicito.
-  u8g2.setI2CAddress(OLED_I2C_ADDR << 1);
-
-  // Orden importante: setBusClock ANTES de begin (U8g2 lo aplica al inicializar);
-  // y Wire.setClock DESPUES de begin, porque u8g2.begin() llama a Wire.begin()
-  // sin argumentos y podria devolver el bus a 100 kHz por defecto.
-  u8g2.setBusClock(OLED_BUS_HZ);
-  u8g2.begin();                 // start the u8g2 library
-  Wire.setClock(OLED_BUS_HZ);   // garantiza el reloj final del bus I2C
-
-  // ---- Splash de arranque (confirma que el panel responde) ----
-  u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_ncenB10_tr);
-  u8g2.drawStr(28, 26, "Mochi");
-  u8g2.setFont(u8g2_font_6x10_tr);
-  u8g2.drawStr(18, 46, "ESP32-WROOM-32");
-  u8g2.sendBuffer();
-  Serial.println(F("[Mochi] Display OK -> mostrando splash 1.2s"));
-  delay(1200);
-
-  // NOTA: las inicializaciones de audio/vibrador/touch/bateria viven en los
-  // STUBS comentados al inicio del archivo (FASE 2+). No se llaman en FASE 1.
+  u8g2.begin(); // start the u8g2 library
 }
 
 
 void loop(void) { // main loop
-
-  // Control de velocidad sin bloquear: avanza un cuadro cada FRAME_INTERVAL_MS.
-  unsigned long now = millis();
-  if (now - lastFrameMs < FRAME_INTERVAL_MS) {
-    return;
-  }
-  lastFrameMs = now;
 
   frame++; // increase the frame number
   if (frame >= 90) {frame = 0;} // only go between 0-89, since we only have 90 images

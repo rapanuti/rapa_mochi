@@ -13,8 +13,8 @@ la cara Mochi** (90 cuadros 128×64). Sin audio, touch, batería, sensores ni Wi
 > Basado 100% en el proyecto original de **upir** (ver créditos abajo).
 
 ### 📂 Sketch listo para usar
-[`minimal_esp32_wroom32_oled/`](minimal_esp32_wroom32_oled/) → abre **`minimal_esp32_wroom32_oled.ino`**
-(guía completa en [`minimal_esp32_wroom32_oled/README.md`](minimal_esp32_wroom32_oled/README.md)).
+[`minimal_rapa_mochi/`](minimal_rapa_mochi/) → abre **`minimal_rapa_mochi.ino`**
+(guía completa en [`minimal_rapa_mochi/README.md`](minimal_rapa_mochi/README.md)).
 
 ### 🔌 Hardware y cableado verificados
 | Componente | Detalle |
@@ -42,11 +42,11 @@ la cara Mochi** (90 cuadros 128×64). Sin audio, touch, batería, sensores ni Wi
 ### ▶️ Cómo compilar y subir (Arduino IDE)
 1. Instala el **soporte de placas ESP32** (Gestor de tarjetas → *esp32 by Espressif Systems*).
 2. Instala la librería **U8g2** (de *oliver / olikraus*) — única dependencia.
-3. Abre `minimal_esp32_wroom32_oled/minimal_esp32_wroom32_oled.ino`.
+3. Abre `minimal_rapa_mochi/minimal_rapa_mochi.ino`.
 4. `Herramientas ▸ Placa` → **ESP32 Dev Module**; selecciona el **Puerto**.
 5. **Subir** → verás el splash `Mochi / ESP32-WROOM-32` y luego la cara Mochi animada en bucle.
 
-> El sketch original para Xiao ESP32-S3 (`ARDUINO_xiao_oled_dasai_mochi/`) se conserva intacto.
+> El sketch `rapa_mochi/` está adaptado al **ESP32-WROOM-32 clásico** (pines I2C por defecto: SDA=21, SCL=22), basado en el original de upir para Xiao ESP32-S3.
 
 ---
 
