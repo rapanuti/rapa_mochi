@@ -101,6 +101,12 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **Fix de condición de carrera en secuencias**: durante una secuencia la emoción se
+  pide **permanente** (sin auto-expiración) y la secuencia controla el tiempo con su
+  propio reloj, evitando el doble temporizador que hacía que los tiempos no se
+  respetaran. El modo demo usa el mismo principio.
+- **Modo aleatorio**: duraciones ahora **5/10/15/20 s** (igual que el constructor de
+  secuencias), en vez de 3–8 s.
 - **Constructor visual de secuencias**: en vez de escribir, eliges cada emoción de un menú
   y su duración (5/10/15/20 s). Las secuencias ahora se reproducen en **loop**.
 - **Sección "Aleatorio"**: el Mochi elige emociones al azar con duración variable (3–8 s),
