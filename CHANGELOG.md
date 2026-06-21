@@ -24,6 +24,11 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **README principal reescrito con identidad propia** (distinto al original de upir):
+  bilingüe **ES + EN**, enfocado a **makers principiantes**, con el gancho de
+  "**compañero de escritorio Mochi**", portada con GIF, tabla de hardware, estructura
+  del repo, inicio rápido, roadmap y una **sección de créditos** aparte (atribución a
+  upir + recursos). Se quitaron los links heredados de AliExpress/WOKWI.
 - `LICENSE`: se añadió la línea de copyright de la adaptación
   (`Copyright (c) 2026 Oswaldo José Anzola`) conservando la original de upir,
   como exige la licencia MIT.
