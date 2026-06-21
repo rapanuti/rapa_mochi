@@ -58,9 +58,18 @@ here is explained step by step.
 
 | Carpeta / Folder | Qué es / What it is |
 |------------------|---------------------|
-| [`rapa_mochi/`](rapa_mochi/) | Sketch principal para ESP32-WROOM-32 + **guía completa** (config probada, WiFi, roadmap). |
-| [`minimal_rapa_mochi/`](minimal_rapa_mochi/) | Versión mínima del port (FASE 1: solo OLED) con control de FPS y splash. |
+| [`rapa_mochi/`](rapa_mochi/) | Sketch principal **modular** para ESP32-WROOM-32 (managers + portal cautivo WiFi). |
+| [`docs/`](docs/) | Documentación: [hardware](docs/hardware.md), [setup Arduino](docs/arduino_setup.md), [portal WiFi](docs/wifi_portal.md), [roadmap](docs/roadmap.md). |
+| [`minimal_rapa_mochi/`](minimal_rapa_mochi/) | Versión mínima de referencia (solo OLED) con control de FPS y splash. |
 | `RIVE_*`, `PHOTOPEA_*` | Recursos de la animación (Rive / Photopea). |
+
+### 🧩 Arquitectura modular / Modular architecture
+
+El sketch está dividido en módulos (aparecen como pestañas en Arduino IDE):
+`display_manager`, `animation_manager`, `wifi_manager` (+ portal cautivo), `storage_manager`
+(NVS), `led_status`, y stubs preparados para crecer: `emotion_manager`, `event_manager`,
+`input_manager` (botones), `mqtt_manager`, `sound_manager`, `vibration_manager`,
+`battery_manager`, `web_config_server`. El `.ino` es solo el orquestador (boot + loop).
 
 ---
 
@@ -84,14 +93,14 @@ hit **Upload**.
 
 ---
 
-## 📶 WiFi
+## 📶 WiFi (portal cautivo)
 
-Para conectar el Mochi a tu red WiFi (variables editables, ejemplo mínimo e integración
-sin romper las animaciones), mira la sección **Conexión WiFi** en
-[`rapa_mochi/README.md`](rapa_mochi/README.md#conexión-wifi).
+Al arrancar, el Mochi intenta conectarse a la red guardada; si no hay o falla, abre un
+Access Point **`RapaMochi_Setup`** para configurarla desde el navegador (lista de redes +
+contraseña). Guía completa en [`docs/wifi_portal.md`](docs/wifi_portal.md).
 
-_To connect the Mochi to your WiFi (editable variables + minimal example), see the
-**Conexión WiFi** section in [`rapa_mochi/README.md`](rapa_mochi/README.md)._
+_On boot the Mochi tries the saved network; if none/fails it opens a **`RapaMochi_Setup`**
+access point to configure WiFi from your browser. Full guide in [`docs/wifi_portal.md`](docs/wifi_portal.md)._
 
 ---
 
