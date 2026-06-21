@@ -35,7 +35,7 @@ here is explained step by step.
 
 - 🐱 Animación de la cara Mochi (90 cuadros, 128×64) en OLED SSD1306.
 - 🔌 Pensado para el **ESP32-WROOM-32 clásico** (ESP32 Dev Module).
-- 📶 Listo para crecer: guía de **WiFi**, hora por NTP, n8n y más (ver Roadmap).
+- 📶 Listo para crecer: guía de **WiFi**, hora por NTP y más (ver Roadmap).
 - 📖 Documentación **paso a paso** para principiantes.
 - 🆓 Software libre (MIT) — úsalo, modifícalo y comparte.
 
@@ -105,11 +105,10 @@ _The plan to grow the Mochi from "animated face" to a connected companion:_
 | **1** | 📶 WiFi + mostrar la **IP** en la OLED · _WiFi + show IP on the OLED_ |
 | **2** | 🕐 Obtener la **hora por NTP** · _Get time over NTP_ |
 | **3** | 😀 **Expresiones** según eventos · _Change expressions based on events_ |
-| **4** | 🔗 Recibir **mensajes desde n8n** (HTTP/MQTT) · _Receive messages from n8n_ |
-| **5** | ✋ Sensor **touch / piezo** · _Touch / piezo input_ |
-| **6** | 📳 **Motor vibrador** · _Vibration motor_ |
-| **7** | 🔋 **Batería 18650** con carga segura · _18650 battery with safe charging_ |
-| **8** | 🧊 **Carcasa tipo Mochi** · _Mochi-shaped enclosure_ |
+| **4** | ✋ Sensor **touch / piezo** · _Touch / piezo input_ |
+| **5** | 📳 **Motor vibrador** · _Vibration motor_ |
+| **6** | 🔋 **Batería 18650** con carga segura · _18650 battery with safe charging_ |
+| **7** | 🧊 **Carcasa tipo Mochi** · _Mochi-shaped enclosure_ |
 
 ---
 
