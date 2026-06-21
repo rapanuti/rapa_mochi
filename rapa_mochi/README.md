@@ -82,13 +82,19 @@ El proyecto fue **probado correctamente** con esta configuración en **Arduino I
 
 ## Conexión WiFi
 
-Puedes conectar el ESP32 a tu red WiFi usando dos **variables editables** al inicio del sketch.
-Cámbialas por los datos de tu red:
+> ✅ **Fase 1 ya implementada.** El sketch `rapa_mochi.ino` **ya incluye el WiFi**: al
+> arrancar intenta conectarse y muestra en la OLED `WiFi OK` + la IP (o `WiFi FAIL`)
+> durante ~2 s, y luego empieza la animación. **Solo tienes que editar tu red.**
+
+Conecta el ESP32 a tu WiFi cambiando estas dos **variables editables** al inicio del sketch
+(cerca de la línea donde se inicializa la OLED):
 
 ```cpp
 const char* ssid     = "TU_WIFI";
 const char* password = "TU_PASSWORD";
 ```
+
+El resto de esta sección explica **cómo funciona** y el ejemplo mínimo de referencia.
 
 ### Ejemplo mínimo compatible con ESP32
 
