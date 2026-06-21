@@ -47,12 +47,11 @@ la cara Mochi** (90 cuadros 128×64). Sin audio, touch, batería, sensores ni Wi
 5. **Subir** → verás el splash `Mochi / ESP32-WROOM-32` y luego la cara Mochi animada en bucle.
 
 > El sketch `rapa_mochi/` está adaptado al **ESP32-WROOM-32 clásico** (pines I2C por defecto: SDA=21, SCL=22), basado en el original de upir para Xiao ESP32-S3.
+> Guía completa, configuración probada, conexión WiFi y roadmap en [`rapa_mochi/README.md`](rapa_mochi/README.md).
 
 ---
 
 ## Proyecto original (upir)
-
-**YouTube video: https://youtu.be/QOoszpg0BsM**
 
 **WOKWI sketch: https://wokwi.com/projects/426385808890236929**
 
@@ -78,13 +77,6 @@ Links from the video:
 - Breadboard wires: https://s.click.aliexpress.com/e/_Dkbngin
 - Rive Application (animations): https://rive.app/
 - RoboEyes Library: https://github.com/FluxGarage/RoboEyes
-
-Related videos with OLED screen:
-- Arduino + OLED displays: https://www.youtube.com/playlist?list=PLjQRaMdk7pBZ1UV3IL5ol8Qc7R9k-kwXA
-- Image to OLED in 60 seconds - https://www.youtube.com/watch?v=Lw0Aaoo3YSY
-- Smaller & Faster Arduino? - https://youtu.be/4GfPQoIRqW8
-- Tiny OLED (72x40px OLED) - https://youtu.be/caHcaUoQ2kg
-- ESP32 with Tiny OLED: https://youtu.be/icD-hER8YQ8
 
 
 
