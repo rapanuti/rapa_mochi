@@ -31,25 +31,49 @@ static void twoLines(const char* l1, const char* l2) {
 
 void dispGreeting()   { twoLines("Hola", "Soy Rapa Mochi"); }
 void dispConnecting() { twoLines("Conectando", "WiFi..."); }
-void dispWifiFail()   { twoLines("WiFi FAIL", "Sigo sin red..."); }
 void dispSaved()      { twoLines("Guardado!", "Reiniciando..."); }
+
+// Texto centrado horizontalmente (fuente 6x10 = 6 px/caracter).
+static void centerStr(int y, const String& s) {
+  u8g2.setFont(u8g2_font_6x10_tr);
+  int x = (128 - 6 * (int)s.length()) / 2;
+  if (x < 0) x = 0;
+  u8g2.drawStr(x, y, s.c_str());
+}
+
+// Mini-cara compacta (ojos + boca) en la parte superior, para dejar la IP/texto debajo.
+static void drawMiniFace(bool happy) {
+  u8g2.drawRBox(44, 6, 14, 15, 4);
+  u8g2.drawRBox(70, 6, 14, 15, 4);
+  const int cx = 64, cy = 28, w = 10, a = 5;
+  for (int x = -w; x <= w; x++) {
+    float t = (float)x / w;
+    int   d = (int)(a * (1.0f - t * t));
+    int   y = happy ? (cy + d) : (cy - d);
+    u8g2.drawPixel(cx + x, y);
+    u8g2.drawPixel(cx + x, y + 1);
+  }
+}
 
 void dispWifiOk(const String& ip) {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_6x10_tr);
-  u8g2.drawStr(0, 20, "WiFi OK");
-  String s = "IP: " + ip;
-  u8g2.drawStr(0, 40, s.c_str());
+  drawMiniFace(true);
+  centerStr(46, "IP: " + ip);
+  u8g2.sendBuffer();
+}
+
+void dispWifiFail() {
+  u8g2.clearBuffer();
+  drawMiniFace(false);
+  centerStr(46, "Sin internet");
   u8g2.sendBuffer();
 }
 
 void dispPortal(const String& apIp) {
   u8g2.clearBuffer();
-  u8g2.setFont(u8g2_font_6x10_tr);
-  u8g2.drawStr(0, 14, "Config WiFi:");
-  u8g2.drawStr(0, 30, AP_SSID);
-  String s = "http://" + apIp;
-  u8g2.drawStr(0, 46, s.c_str());
+  drawMiniFace(false);                 // cara "sin WiFi"
+  centerStr(43, AP_SSID);              // red a la que conectarse
+  centerStr(57, apIp);                 // IP del portal (192.168.4.1)
   u8g2.sendBuffer();
 }
 
