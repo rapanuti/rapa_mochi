@@ -101,6 +101,9 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **Probar emoción ahora es permanente (manual)**: al pulsar una emoción se queda fija
+  hasta que pulses otra (`WEB_TEST_MS = 0`). Además, al probar se apagan los modos
+  automáticos (aleatorio/demo) y la secuencia, para que nada la corte.
 - **Modos exclusivos**: secuencia, modo aleatorio, demo y personalidad ahora se excluyen
   (solo uno activo a la vez). Iniciar una secuencia apaga aleatorio/demo, y activar
   aleatorio/demo detiene la secuencia. Esto arregla que el **modo aleatorio no disparara**

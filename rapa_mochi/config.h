@@ -34,7 +34,9 @@
 #define AP_SSID             "RapaMochi_Setup"
 
 // --- Panel web ---
-#define WEB_TEST_MS         9000       // cuanto dura una emocion al pulsar "Probar"
+// Duracion de una emocion al pulsar "Probar". 0 = permanente (se queda hasta
+// que pulses otra). Pon un valor en ms (p.ej. 9000) si la quieres temporal.
+#define WEB_TEST_MS         0
 
 // --- Botones fisicos (GPIO 25/26/27 limpios, soportan INPUT_PULLUP) ---
 #define BUTTON_1            25

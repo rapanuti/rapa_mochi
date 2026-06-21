@@ -205,8 +205,11 @@ static void handleRoot()    { web.send(200, "text/html", pageStatus()); }
 
 static void handleEmo() {
   if (web.hasArg("e")) {
-    seqStop();                                   // corta una secuencia en curso
-    // Duracion fija (WEB_TEST_MS) y force=true para que siempre se vea al probar.
+    // El test toma el control total: apaga modos automaticos y secuencia para que
+    // la emocion no la corten, y la muestra (WEB_TEST_MS=0 -> permanente).
+    behaviorSetDemo(false);
+    behaviorSetRandom(false);
+    seqStop();
     emotionRequestFor(emotionFromName(web.arg("e")), WEB_TEST_MS, /*force=*/true);
   }
   redirectHome();
