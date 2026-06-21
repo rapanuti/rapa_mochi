@@ -7,6 +7,8 @@
 #include "storage_manager.h"
 
 static bool     enabled  = true;
+static bool     demo     = false;
+static uint8_t  demoIdx  = 1;
 static uint32_t lastTick = 0;
 
 void behaviorBegin() {
@@ -22,22 +24,35 @@ void behaviorSetEnabled(bool on) {
 
 bool behaviorEnabled() { return enabled; }
 
+void behaviorSetDemo(bool on) { demo = on; demoIdx = 1; lastTick = 0; }
+bool behaviorDemo()           { return demo; }
+
 void behaviorUpdate(uint32_t now) {
+  // Modo demo: recorre TODAS las caras (1..COUNT-1), ~3 s cada una.
+  if (demo) {
+    if (now - lastTick >= 3000) {
+      lastTick = now;
+      emotionRequestFor((Emotion)demoIdx, 3000, /*force=*/true);
+      if (++demoIdx >= (uint8_t)Emotion::COUNT) demoIdx = 1;
+    }
+    return;
+  }
+
   if (!enabled) return;
 
   // Solo "reacciona" cuando descansa sobre su cara base (sin emocion transitoria).
-  // Nota: usar emotionCurrent()!=emotionDefault() (no emotionActive) para que la
-  // personalidad siga funcionando aunque la base elegida no sea idle.
   if (emotionCurrent() != emotionDefault()) { lastTick = now; return; }
 
   if (now - lastTick < BEHAVIOR_TICK_MS) return;
   lastTick = now;
 
   if ((int)random(0, 100) < BEHAVIOR_CHANCE) {
+    // Repertorio VARIADO (no solo sonrisas) para que se note el cambio.
     static const Emotion moods[] = {
-      Emotion::HAPPY, Emotion::THINKING, Emotion::SLEEPY, Emotion::SURPRISED,
-      Emotion::SMILE, Emotion::UWU, Emotion::SAKURA, Emotion::LOOK_DOWN,
-      Emotion::DISTRACTED, Emotion::LAUGH, Emotion::BEE,
+      Emotion::HAPPY, Emotion::SAD, Emotion::SURPRISED, Emotion::ANGRY, Emotion::SLEEPY,
+      Emotion::THINKING, Emotion::HOT, Emotion::COLD, Emotion::UWU, Emotion::SAKURA,
+      Emotion::LOVE, Emotion::DISTRACTED, Emotion::SNEEZE, Emotion::LOOK_DOWN,
+      Emotion::SHIFT, Emotion::BEE, Emotion::ROTATION, Emotion::GFORCE, Emotion::SQUINT,
     };
     const int N = sizeof(moods) / sizeof(moods[0]);
     emotionRequest(moods[random(0, N)]);   // respeta prioridad (force=false)

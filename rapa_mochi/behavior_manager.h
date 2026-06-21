@@ -9,3 +9,5 @@ void behaviorBegin();
 void behaviorUpdate(uint32_t now);
 void behaviorSetEnabled(bool on);
 bool behaviorEnabled();
+void behaviorSetDemo(bool on);     // modo demo: recorre todas las caras
+bool behaviorDemo();

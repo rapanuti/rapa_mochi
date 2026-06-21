@@ -137,6 +137,9 @@ static String pageStatus() {
   h += "<p>Personalidad autonoma: <b>" + String(behaviorEnabled() ? "ON" : "OFF") + "</b> "
        "<a class='btn' href='/behavior?on=1'>ON</a>"
        "<a class='btn' href='/behavior?on=0'>OFF</a></p>";
+  h += "<p>Modo demo (recorre TODAS las caras): <b>" + String(behaviorDemo() ? "ON" : "OFF") + "</b> "
+       "<a class='btn' href='/demo?on=1'>ON</a>"
+       "<a class='btn' href='/demo?on=0'>OFF</a></p>";
   h += "</fieldset>";
 
   // --- Mensaje en la OLED (texto / IA externa) ---
@@ -215,6 +218,11 @@ static void handleBehavior() {
   redirectHome();
 }
 
+static void handleDemo() {
+  if (web.hasArg("on")) behaviorSetDemo(web.arg("on").toInt() != 0);
+  redirectHome();
+}
+
 static void handleNotice() {
   if (web.hasArg("text")) noticeShow(web.arg("text"));
   redirectHome();
@@ -231,6 +239,7 @@ void webBegin() {
   web.on("/seqsave", handleSeqSave);
   web.on("/btnset", handleBtnSet);
   web.on("/behavior", handleBehavior);
+  web.on("/demo", handleDemo);
   web.on("/notice", handleNotice);
   web.begin();
   started = true;
