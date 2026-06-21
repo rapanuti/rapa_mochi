@@ -17,11 +17,11 @@ De un sketch visual a un companion modular, configurable e interactivo.
 ## Fase 3 — Portal cautivo WiFi ✅ (este entregable)
 - AP **RapaMochi_Setup**, página de configuración (lista de redes + manual), guardar en NVS, mostrar IP.
 
-## Fase 4 — Página web local (post-MVP)
-- Estado (IP, heap, uptime, versión), prueba de animaciones, emoción por defecto, configuración básica de secuencias.
+## Fase 4 — Página web local ✅
+- Estado (IP, heap, uptime, versión), prueba de emociones, emoción por defecto, saludo on/off, secuencias. Panel en `http://<IP>` (ver [web_panel.md](web_panel.md)).
 
-## Fase 5 — Secuencias de emociones
-- Guardar secuencias con nombre; ejecutarlas desde web, botones o eventos.
+## Fase 5 — Secuencias de emociones ✅
+- Crear/nombrar/guardar secuencias (NVS) y ejecutarlas desde la web (`emo:ms;emo:ms;...`). Pendiente: dispararlas desde botones/eventos (Fases 6–7).
 
 ## Fase 6 — Botones
 - 2–3 botones configurables (GPIO 25/26/27); asignar acciones desde la web.

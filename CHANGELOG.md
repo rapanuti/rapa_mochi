@@ -15,6 +15,19 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Bloque A — Emociones + Panel web (Fases 4 y 5).**
+  - **Sistema de emociones con caras procedurales** (`emotion_manager` + `face_renderer`):
+    13 emociones (idle/happy/sad/surprised/angry/sleepy/hot/cold/thinking/notification/
+    error/wifi_ok/wifi_fail) dibujadas con primitivas U8g2 (ojos/boca/iconos, con
+    parpadeo). El **idle** sigue siendo la animación Mochi de 90 frames. Cada emoción
+    tiene duración y prioridad; al expirar vuelve a la emoción por defecto.
+  - **Secuencias de emociones** (`sequence_manager`): crear/nombrar/guardar (en NVS) y
+    reproducir cadenas tipo `happy:1000;surprised:600;sad:800`.
+  - **Panel web local** (`web_config_server`, puerto 80, al conectar): estado del
+    dispositivo (IP, heap, uptime, versión, emoción actual), **probar cada emoción**,
+    fijar **emoción por defecto**, activar/desactivar el **saludo inicial**, y
+    crear/guardar/probar **secuencias**.
+  - Primitivas de dibujo añadidas a `display_manager`; KV genérico en `storage_manager`.
 - **Arquitectura modular (refactor mayor).** El sketch de un solo archivo se dividió en
   módulos (pestañas de Arduino IDE): `config.h`, `mochi_frames.{h,cpp}` (los 90 frames
   movidos **verbatim**, hash idéntico), `display_manager`, `animation_manager`,
