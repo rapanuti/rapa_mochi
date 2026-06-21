@@ -202,8 +202,7 @@ void loop() {}
 - **Fase 1 — WiFi + mostrar IP en OLED.** Conectar a la red y mostrar la IP en pantalla.
 - **Fase 2 — Hora por NTP.** Sincronizar la hora con un servidor NTP y mostrarla.
 - **Fase 3 — Expresiones según eventos.** Cambiar la cara/animación del Mochi según eventos.
-- **Fase 4 — Mensajes desde n8n.** Recibir mensajes desde **n8n** por **HTTP** o **MQTT**.
-- **Fase 5 — Sensor touch / piezo.** Añadir entrada táctil capacitiva o un piezo.
-- **Fase 6 — Motor vibrador.** Añadir vibración (motor vía transistor) para feedback háptico.
-- **Fase 7 — Batería 18650.** Alimentación con celda 18650 y **carga segura** (TP4056/protección).
-- **Fase 8 — Carcasa tipo Mochi.** Diseñar e imprimir una carcasa con forma de Mochi.
+- **Fase 4 — Sensor touch / piezo.** Añadir entrada táctil capacitiva o un piezo.
+- **Fase 5 — Motor vibrador.** Añadir vibración (motor vía transistor) para feedback háptico.
+- **Fase 6 — Batería 18650.** Alimentación con celda 18650 y **carga segura** (TP4056/protección).
+- **Fase 7 — Carcasa tipo Mochi.** Diseñar e imprimir una carcasa con forma de Mochi.
