@@ -11,3 +11,5 @@ void behaviorSetEnabled(bool on);
 bool behaviorEnabled();
 void behaviorSetDemo(bool on);     // modo demo: recorre todas las caras
 bool behaviorDemo();
+void behaviorSetRandom(bool on);   // modo aleatorio: emocion y duracion al azar (loop)
+bool behaviorRandom();

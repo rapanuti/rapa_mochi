@@ -13,8 +13,8 @@ String seqName(int i);                               // nombre del slot i ("" si
 String seqData(int i);                               // datos del slot i
 bool   seqSave(int i, const String& name, const String& data);
 
-void   seqPlay(int i);                               // reproduce el slot i guardado
-void   seqPlayData(const String& data);              // reproduce datos sin guardar (test)
+void   seqPlay(int i, bool loop = false);            // reproduce el slot i guardado
+void   seqPlayData(const String& data, bool loop = false); // reproduce datos (test)
 void   seqUpdate(uint32_t now);                      // avanza pasos (llamar en loop)
 bool   seqPlaying();
 void   seqStop();

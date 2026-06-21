@@ -56,6 +56,19 @@ static String allEmotionOptions() {
   return o;
 }
 
+// Opciones para el constructor de secuencias (con un "—" = paso vacio).
+static String stepEmotionOptions() {
+  String o = "<option value=''>—</option>";
+  for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++)
+    o += "<option value='" + String(emotionName((Emotion)i)) + "'>" + String(emotionName((Emotion)i)) + "</option>";
+  return o;
+}
+
+static String stepTimeOptions() {
+  return "<option value='5000'>5s</option><option value='10000'>10s</option>"
+         "<option value='15000'>15s</option><option value='20000'>20s</option>";
+}
+
 // Fila de toggle ON/OFF estilo macOS (resalta el estado activo).
 static String pill(const char* label, const char* path, bool on) {
   return "<div class='row'><span class='muted'>" + String(label) + "</span><span>"
@@ -123,16 +136,23 @@ static String pageStatus() {
     String nm = seqName(i);
     h += "<div class='row'><span><b>" + String(i) + "</b> " + (nm.length() ? nm : String("(vacio)"))
        + " <span class='muted'>" + seqData(i) + "</span></span>";
-    if (seqData(i).length()) h += "<a class='chip' href='/seqplay?i=" + String(i) + "'>play</a>";
+    if (seqData(i).length()) h += "<a class='chip' href='/seqplay?i=" + String(i) + "'>play (loop)</a>";
     h += "</div>";
   }
-  h += "<form action='/seqsave' method='GET'><label>Guardar en slot</label> <select name='i'>";
+
+  // Constructor visual: elige emocion + tiempo por paso (se reproduce en loop).
+  h += "<form action='/seqbuild' method='GET'><label>Constructor (elige emocion y tiempo)</label>";
+  for (int s = 0; s < 5; s++) {
+    h += "<div class='row'><select name='e" + String(s) + "'>" + stepEmotionOptions() + "</select>"
+         "<select name='t" + String(s) + "'>" + stepTimeOptions() + "</select></div>";
+  }
+  h += "<label>Guardar en slot</label> <select name='i'>";
   for (int i = 0; i < seqSlots(); i++) h += "<option value='" + String(i) + "'>" + String(i) + "</option>";
   h += "</select><input name='name' placeholder='nombre de la secuencia'>"
-       "<input name='data' placeholder='happy:1000;surprised:600;sad:800'>"
-       "<button type='submit'>Guardar</button></form>";
-  h += "<form action='/seqtest' method='GET'><label>Probar sin guardar</label>"
-       "<input name='data' placeholder='happy:800;angry:800'>"
+       "<button type='submit'>Guardar y reproducir (loop)</button></form>";
+
+  h += "<form action='/seqtest' method='GET'><label>Avanzado: texto (loop)</label>"
+       "<input name='data' placeholder='happy:5000;angry:5000'>"
        "<button type='submit'>Probar</button></form>";
   h += "</div>";
 
@@ -156,6 +176,12 @@ static String pageStatus() {
   }
   h += pill("Personalidad autonoma", "/behavior", behaviorEnabled());
   h += pill("Modo demo (todas las caras)", "/demo", behaviorDemo());
+  h += "</div>";
+
+  // --- Aleatorio ---
+  h += "<div class='card'><h2>Aleatorio</h2>";
+  h += pill("Emociones al azar (duracion variable, loop)", "/random", behaviorRandom());
+  h += "<small>El Mochi va eligiendo una emocion al azar (3-8 s cada una) sin parar.</small>";
   h += "</div>";
 
   // --- Mensaje en pantalla ---
@@ -203,12 +229,33 @@ static void handleGreeting() {
 }
 
 static void handleSeqPlay() {
-  if (web.hasArg("i")) seqPlay(web.arg("i").toInt());
+  if (web.hasArg("i")) seqPlay(web.arg("i").toInt(), /*loop=*/true);
   redirectHome();
 }
 
 static void handleSeqTest() {
-  if (web.hasArg("data")) seqPlayData(web.arg("data"));
+  if (web.hasArg("data")) seqPlayData(web.arg("data"), /*loop=*/true);
+  redirectHome();
+}
+
+// Constructor visual: arma "emo:ms;..." con los pasos elegidos y lo guarda + reproduce en loop.
+static void handleSeqBuild() {
+  String data = "";
+  for (int s = 0; s < 5; s++) {
+    String e = web.arg(String("e") + s);
+    if (e.length() == 0) continue;                 // paso vacio ("—")
+    String t = web.arg(String("t") + s);
+    if (t.length() == 0) t = "5000";
+    if (data.length()) data += ";";
+    data += e + ":" + t;
+  }
+  if (data.length()) {
+    int slot  = web.hasArg("i") ? web.arg("i").toInt() : 0;
+    String nm = web.arg("name"); if (nm.length() == 0) nm = "secuencia";
+    seqSave(slot, nm, data);
+    seqStop();
+    seqPlayData(data, /*loop=*/true);
+  }
   redirectHome();
 }
 
@@ -236,7 +283,12 @@ static void handleBehavior() {
 }
 
 static void handleDemo() {
-  if (web.hasArg("on")) behaviorSetDemo(web.arg("on").toInt() != 0);
+  if (web.hasArg("on")) { seqStop(); behaviorSetDemo(web.arg("on").toInt() != 0); }
+  redirectHome();
+}
+
+static void handleRandom() {
+  if (web.hasArg("on")) { seqStop(); behaviorSetRandom(web.arg("on").toInt() != 0); }
   redirectHome();
 }
 
@@ -254,9 +306,11 @@ void webBegin() {
   web.on("/seqplay", handleSeqPlay);
   web.on("/seqtest", handleSeqTest);
   web.on("/seqsave", handleSeqSave);
+  web.on("/seqbuild", handleSeqBuild);
   web.on("/btnset", handleBtnSet);
   web.on("/behavior", handleBehavior);
   web.on("/demo", handleDemo);
+  web.on("/random", handleRandom);
   web.on("/notice", handleNotice);
   web.begin();
   started = true;
