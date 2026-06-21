@@ -58,3 +58,22 @@ void dispFrame(const unsigned char* xbm) {
   u8g2.drawXBMP(0, 0, 128, 64, xbm);
   u8g2.sendBuffer();
 }
+
+// --- Primitivas de dibujo ---------------------------------------------------
+void dispClear()              { u8g2.clearBuffer(); }
+void dispFlush()              { u8g2.sendBuffer(); }
+void dispSetColor(uint8_t c)  { u8g2.setDrawColor(c); }
+void dispPixel(int x, int y)  { u8g2.drawPixel(x, y); }
+void dispLine(int x0, int y0, int x1, int y1) { u8g2.drawLine(x0, y0, x1, y1); }
+void dispBox(int x, int y, int w, int h)      { u8g2.drawBox(x, y, w, h); }
+void dispRBox(int x, int y, int w, int h, int r) { u8g2.drawRBox(x, y, w, h, r); }
+void dispDisc(int x, int y, int r)            { u8g2.drawDisc(x, y, r); }
+void dispCircle(int x, int y, int r)          { u8g2.drawCircle(x, y, r); }
+void dispEllipseFilled(int x, int y, int rx, int ry) { u8g2.drawFilledEllipse(x, y, rx, ry); }
+void dispTriangle(int x0, int y0, int x1, int y1, int x2, int y2) {
+  u8g2.drawTriangle(x0, y0, x1, y1, x2, y2);
+}
+void dispTextSmall(int x, int y, const char* s) {
+  u8g2.setFont(u8g2_font_6x10_tr);
+  u8g2.drawStr(x, y, s);
+}

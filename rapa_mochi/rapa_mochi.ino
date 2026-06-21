@@ -19,8 +19,11 @@
 #include "storage_manager.h"
 #include "wifi_manager.h"
 
-// --- Arquitectura preparada (stubs desactivados) ---
+// --- Emociones / secuencias / web (Bloque A) ---
 #include "emotion_manager.h"
+#include "sequence_manager.h"
+
+// --- Arquitectura preparada (stubs desactivados) ---
 #include "event_manager.h"
 #include "input_manager.h"
 #include "mqtt_manager.h"
@@ -64,8 +67,12 @@ void setup() {
   storageBegin();      // NVS
   animBegin();         // animacion idle
 
-  // Managers preparados (no-op mientras esten desactivados):
+  // Emociones + secuencias (Bloque A):
   emotionBegin();
+  seqBegin();
+  emotionSetDefault(emotionFromName(storageGetString("defemo", "idle")));
+
+  // Managers preparados (no-op mientras esten desactivados):
   eventBegin();
   inputBegin();
   mqttBegin();
@@ -73,8 +80,14 @@ void setup() {
   vibrationBegin();
   batteryBegin();
 
-  bootState = BOOT_GREETING;
-  tEstado   = millis();
+  // Saludo inicial configurable desde la web: si esta OFF, va directo a conectar.
+  if (storageGetInt("greet", 1)) {
+    bootState = BOOT_GREETING;
+  } else {
+    wifiBeginTry();
+    bootState = BOOT_WIFI_TRY;
+  }
+  tEstado = millis();
   eventPost(EventType::BOOT);
 }
 
@@ -122,14 +135,18 @@ void loop() {
 
     case BOOT_WIFI_INFO:                       // "WiFi OK" + IP unos segundos
       if (now - tEstado >= WIFI_INFO_MS) {
+        if (wifiIsConnected()) webBegin();     // arranca el panel web (puerto 80)
         bootState = RUN_IDLE;
       }
       break;
 
-    case RUN_IDLE:                             // animacion en bucle
-      animRenderNext();
-      // Futuro (post-MVP): emotionUpdate(now); eventUpdate(now); webUpdate();
-      //                    mqttUpdate(); soundUpdate(); vibrationUpdate(); batteryUpdate();
+    case RUN_IDLE:                             // estado normal
+      if (wifiIsConnected()) webUpdate();      // atiende el panel web
+      seqUpdate(now);                          // avanza la secuencia si hay una
+      emotionUpdate(now);                      // expira la emocion -> base
+      if (emotionActive()) emotionRender(now); // cara procedural (happy/sad/...)
+      else                 animRenderNext();   // animacion Mochi (idle, 90 frames)
+      // Futuro: eventUpdate(now); mqttUpdate(); soundUpdate(); vibrationUpdate(); batteryUpdate();
       break;
   }
 }
