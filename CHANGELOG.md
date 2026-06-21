@@ -101,6 +101,10 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **Caras procedurales rediseñadas al estilo oficial Dasai Mochi (Gen 3)**: ojos como
+  rectángulos verticales redondeados, ojos `^ ^` (happy), medio cerrados (sleepy), en `X`
+  (error), lágrima (sad), gota de sudor (hot), y detalles `z`/`?`/`!`/`WiFi`. Basado en la
+  *face gallery* de referencia.
 - El estado del WiFi (IP) ahora se muestra en la OLED **~10 s** al arrancar
   (antes 2 s), configurable con `#define WIFI_INFO_MS`. La IP también sale por el
   Monitor Serie (115200).
