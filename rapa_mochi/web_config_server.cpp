@@ -52,17 +52,21 @@ static String defaultEmotionOptions(Emotion sel) {
 }
 
 static String allEmotionOptions() {
-  String o;
-  for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++)
-    o += "<option value='" + String(emotionName((Emotion)i)) + "'>" + String(emotionName((Emotion)i)) + "</option>";
+  static String o;                       // se construye una sola vez (cache)
+  if (o.length() == 0)
+    for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++)
+      o += "<option value='" + String(emotionName((Emotion)i)) + "'>" + String(emotionName((Emotion)i)) + "</option>";
   return o;
 }
 
 // Opciones para el constructor de secuencias (con un "—" = paso vacio).
 static String stepEmotionOptions() {
-  String o = "<option value=''>—</option>";
-  for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++)
-    o += "<option value='" + String(emotionName((Emotion)i)) + "'>" + String(emotionName((Emotion)i)) + "</option>";
+  static String o;                       // cache
+  if (o.length() == 0) {
+    o = "<option value=''>—</option>";
+    for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++)
+      o += "<option value='" + String(emotionName((Emotion)i)) + "'>" + String(emotionName((Emotion)i)) + "</option>";
+  }
   return o;
 }
 
@@ -332,7 +336,7 @@ static void handleFace() {
       if ((buf[(y >> 3) * 128 + x] >> (y & 7)) & 1) dst[x >> 3] |= (0x80 >> (x & 7));
     }
   }
-  web.sendHeader("Cache-Control", "max-age=600");
+  web.sendHeader("Cache-Control", "max-age=3600");   // cachea 1 h (se pide una vez)
   web.send_P(200, PSTR("image/bmp"), (PGM_P)bmp, sizeof(bmp));
 }
 
@@ -356,6 +360,12 @@ void webBegin() {
   Serial.print(F("[WEB] panel en http://")); Serial.println(WiFi.localIP());
 }
 
-void webUpdate() { if (started) web.handleClient(); }
+void webUpdate() {
+  if (!started) return;
+  // Atiende varias peticiones por vuelta del loop: el WebServer es sincrono y el
+  // refresco de la OLED (~23 ms) limita a ~1 request/vuelta, lo que hacia lenta la
+  // carga de las 33 miniaturas. Asi se sirven varias de golpe.
+  for (int i = 0; i < 8; i++) web.handleClient();
+}
 
 void webStop()   { if (started) { web.stop(); started = false; } }
