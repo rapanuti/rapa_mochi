@@ -33,6 +33,9 @@
 // --- Portal cautivo ---
 #define AP_SSID             "RapaMochi_Setup"
 
+// --- Panel web ---
+#define WEB_TEST_MS         3000       // cuanto dura una emocion al pulsar "Probar"
+
 // --- Botones fisicos (GPIO 25/26/27 limpios, soportan INPUT_PULLUP) ---
 #define BUTTON_1            25
 #define BUTTON_2            26

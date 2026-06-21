@@ -164,7 +164,8 @@ static void handleRoot()    { web.send(200, "text/html", pageStatus()); }
 static void handleEmo() {
   if (web.hasArg("e")) {
     seqStop();                                   // corta una secuencia en curso
-    emotionRequest(emotionFromName(web.arg("e")));
+    // Duracion fija (WEB_TEST_MS) y force=true para que siempre se vea al probar.
+    emotionRequestFor(emotionFromName(web.arg("e")), WEB_TEST_MS, /*force=*/true);
   }
   redirectHome();
 }
