@@ -15,6 +15,9 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Portal cautivo mejorado**: página con estilo limpio (macOS), lista de redes detectadas
+  para **seleccionar**, campo de SSID manual + contraseña, y botón **"volver a escanear"**.
+  Al guardar una red nueva y reconectar, la OLED muestra **"Nueva red!"** + IP (cara feliz).
 - **Cara de WiFi en el arranque**: la pantalla de conexión muestra una **mini-cara**
   (feliz si hay WiFi, triste si no) con la **IP centrada debajo**; el portal cautivo
   muestra la cara triste + la red `RapaMochi_Setup` y su IP. Hay también pantalla

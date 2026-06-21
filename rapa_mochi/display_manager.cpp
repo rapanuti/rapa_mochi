@@ -77,6 +77,14 @@ void dispCreatingAP() {
   u8g2.sendBuffer();
 }
 
+void dispNewNetwork(const String& ip) {
+  u8g2.clearBuffer();
+  drawMiniFace(true);
+  centerStr(43, "Nueva red!");
+  centerStr(57, "IP: " + ip);
+  u8g2.sendBuffer();
+}
+
 void dispPortal(const String& apIp) {
   u8g2.clearBuffer();
   drawMiniFace(false);                 // cara "sin WiFi"

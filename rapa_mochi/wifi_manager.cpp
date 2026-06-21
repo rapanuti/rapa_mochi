@@ -46,23 +46,38 @@ String wifiIP()          { return WiFi.localIP().toString(); }
 // ---------------------------------------------------------------------------
 //  Portal cautivo
 // ---------------------------------------------------------------------------
+static const char PORTAL_CSS[] PROGMEM =
+  "<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'>"
+  "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+  "<title>Rapa Mochi - WiFi</title><style>"
+  "body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;"
+  "background:#f5f5f7;color:#1d1d1f;margin:0;padding:22px 14px}"
+  ".card{background:#fff;border-radius:16px;padding:18px;max-width:420px;margin:0 auto;"
+  "box-shadow:0 1px 4px rgba(0,0,0,.1)}h2{margin:0 0 2px;font-size:22px}"
+  ".muted{color:#86868b;font-size:13px;margin:0 0 14px}label{font-size:13px;color:#86868b}"
+  "select,input{width:100%;box-sizing:border-box;padding:10px;margin:4px 0 12px;"
+  "border:1px solid #d2d2d7;border-radius:10px;font:inherit}"
+  "button{width:100%;padding:13px;border:none;border-radius:10px;background:#0071e3;"
+  "color:#fff;font:inherit;font-size:15px;cursor:pointer}"
+  ".btn2{display:block;text-align:center;background:#e8e8ed;color:#1d1d1f;text-decoration:none;"
+  "border-radius:10px;padding:9px;margin:0 0 14px;font-size:14px}"
+  "</style></head><body><div class='card'>";
+
 static String htmlPage() {
-  String h = F("<!DOCTYPE html><html><head>"
-               "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-               "<title>Rapa Mochi</title></head>"
-               "<body style='font-family:sans-serif;max-width:420px;margin:auto;padding:16px'>"
-               "<h2>Rapa Mochi &mdash; Config WiFi</h2>"
-               "<form method='POST' action='/save'>"
-               "<label>Red WiFi detectada</label><br>"
-               "<select name='ssid' style='width:100%;padding:8px'>");
+  String h = FPSTR(PORTAL_CSS);
+  h += F("<h2>🐱 Rapa Mochi</h2><p class='muted'>Configura tu red WiFi (2.4 GHz)</p>"
+         "<form method='POST' action='/save'>"
+         "<label>Redes detectadas</label>"
+         "<select name='ssid'>");
   h += scanCache;
-  h += F("</select><br><br>"
-         "<label>O escribe el SSID manual</label><br>"
-         "<input name='ssid_manual' style='width:100%;padding:8px' placeholder='SSID'><br><br>"
-         "<label>Password</label><br>"
-         "<input name='pass' type='password' style='width:100%;padding:8px'><br><br>"
-         "<button type='submit' style='width:100%;padding:12px'>Guardar y reiniciar</button>"
-         "</form></body></html>");
+  h += F("</select>"
+         "<a class='btn2' href='/rescan'>&#8635; Volver a escanear</a>"
+         "<label>O escribe el nombre (SSID) manual</label>"
+         "<input name='ssid_manual' placeholder='Nombre de la red'>"
+         "<label>Contrasena</label>"
+         "<input name='pass' type='password' placeholder='Contrasena'>"
+         "<button type='submit'>Guardar y conectar</button>"
+         "</form></div></body></html>");
   return h;
 }
 
@@ -79,20 +94,32 @@ static void doScan() {
 
 static void handleRoot() { server.send(200, "text/html", htmlPage()); }
 
+// Volver a escanear redes y recargar el formulario.
+static void handleRescan() {
+  doScan();
+  server.sendHeader("Location", "/", true);
+  server.send(303, "text/plain", "");
+}
+
 static void handleSave() {
   String ssid = server.arg("ssid_manual");
   if (ssid.length() == 0) ssid = server.arg("ssid");   // del <select> si no hay manual
   String pass = server.arg("pass");
   if (ssid.length() > 0) {
     storageSaveWiFi(ssid, pass);
+    storagePutInt("newcfg", 1);                         // marca: red nueva configurada
     gotCreds = true;
     server.send(200, "text/html",
-                F("<html><body style='font-family:sans-serif'>"
-                  "<h3>Guardado. Reiniciando...</h3></body></html>"));
+                F("<!DOCTYPE html><html><head><meta charset='utf-8'>"
+                  "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+                  "<style>body{font-family:-apple-system,sans-serif;background:#f5f5f7;text-align:center;"
+                  "padding:40px 16px;color:#1d1d1f}</style></head><body>"
+                  "<h2>&#10003; Guardado</h2><p>Conectando a tu red... el Mochi se reinicia.</p>"
+                  "</body></html>"));
   } else {
     server.send(200, "text/html",
-                F("<html><body style='font-family:sans-serif'>"
-                  "<h3>SSID vacio. <a href='/'>volver</a></h3></body></html>"));
+                F("<html><body style='font-family:sans-serif;text-align:center;padding:30px'>"
+                  "<h3>Falta el nombre de la red. <a href='/'>volver</a></h3></body></html>"));
   }
 }
 
@@ -114,6 +141,7 @@ void wifiStartPortal() {
   dns.start(DNS_PORT, "*", WiFi.softAPIP());
   server.on("/", handleRoot);
   server.on("/save", HTTP_POST, handleSave);
+  server.on("/rescan", handleRescan);
   server.onNotFound(handleNotFound);
   server.begin();
   portalActive = true;

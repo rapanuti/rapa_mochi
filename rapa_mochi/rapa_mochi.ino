@@ -53,7 +53,14 @@ static void drawStateOnce() {
     case BOOT_GREETING:  dispGreeting();               break;
     case BOOT_WIFI_TRY:  dispConnecting();             break;
     case BOOT_PORTAL:    dispPortal(wifiPortalApIP()); break;
-    case BOOT_WIFI_INFO: dispWifiOk(wifiIP());         break;
+    case BOOT_WIFI_INFO:
+      if (storageGetInt("newcfg", 0)) {        // recien configurada desde el portal
+        storagePutInt("newcfg", 0);            // limpia la marca (solo una vez)
+        dispNewNetwork(wifiIP());
+      } else {
+        dispWifiOk(wifiIP());
+      }
+      break;
     case RUN_IDLE:       /* la animacion se dibuja en loop */ break;
   }
 }

@@ -9,7 +9,8 @@ void dispGreeting();                    // "Hola" / "Soy Rapa Mochi"
 void dispConnecting();                  // "Conectando WiFi..."
 void dispCreatingAP();                   // "Sin WiFi / Creando red" mientras levanta el portal
 void dispPortal(const String& apIp);    // cara + RapaMochi_Setup + IP del portal
-void dispWifiOk(const String& ip);      // "WiFi OK" + "IP: x.x.x.x"
+void dispWifiOk(const String& ip);      // cara feliz + "IP: x.x.x.x"
+void dispNewNetwork(const String& ip);  // cara feliz + "Nueva red!" + IP (tras configurar)
 void dispWifiFail();                    // "WiFi FAIL"
 void dispSaved();                       // "Guardado / Reiniciando..."
 void dispFrame(const unsigned char* xbm); // dibuja un frame 128x64 y refresca
