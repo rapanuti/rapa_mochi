@@ -69,6 +69,14 @@ void dispWifiFail() {
   u8g2.sendBuffer();
 }
 
+void dispCreatingAP() {
+  u8g2.clearBuffer();
+  drawMiniFace(false);
+  centerStr(43, "Sin WiFi");
+  centerStr(57, "Creando red...");
+  u8g2.sendBuffer();
+}
+
 void dispPortal(const String& apIp) {
   u8g2.clearBuffer();
   drawMiniFace(false);                 // cara "sin WiFi"

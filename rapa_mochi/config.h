@@ -28,7 +28,7 @@
 // --- Timings de arranque (TODOS no bloqueantes, via millis()) ---
 #define GREETING_MS         2500       // "Hola" / "Soy Rapa Mochi"
 #define WIFI_TRY_MS         10000      // ventana para conectar al WiFi guardado
-#define WIFI_INFO_MS        10000      // "WiFi OK" + IP en pantalla
+#define WIFI_INFO_MS        20000      // muestra la cara + IP ~20 s (tiempo de entrar al panel)
 
 // --- Portal cautivo ---
 #define AP_SSID             "RapaMochi_Setup"
