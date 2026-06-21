@@ -15,6 +15,13 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Fase 1 del roadmap — WiFi + IP en OLED.** `rapa_mochi.ino` ahora se conecta al WiFi
+  al arrancar (función `conectarWiFi()` acotada a ~10 s para no congelar la animación) y
+  muestra en la OLED `WiFi OK` + la IP, o `WiFi FAIL`, durante ~2 s antes de la animación.
+  Variables editables `ssid` / `password` al inicio del sketch.
+  - **LED azul integrado (GPIO2)**: parpadea con un destello breve **cada 5 s solo
+    cuando hay WiFi conectado**, de forma no bloqueante (con `millis()`, sin frenar la
+    animación). Indicador visual de "conectado".
 - `CHANGELOG.md` con el historial del proyecto y el flujo de trabajo por ramas.
 - `rapa_mochi/README.md`: guía dedicada con la **configuración probada en
   ESP32-WROOM-32** (Board: ESP32 Dev Module, Port: `/dev/cu.usbserial-10`,

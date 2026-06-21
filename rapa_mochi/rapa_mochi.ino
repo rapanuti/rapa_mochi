@@ -28,8 +28,94 @@
 #include <Arduino.h>
 #include <U8g2lib.h> // library for drawing images to the OLED display
 #include <Wire.h> // library requires for IIC communication
+#include <WiFi.h> // FASE 1: conexion WiFi del ESP32
 
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE); // initialization for the used OLED display
+
+// ===========================================================================
+//  FASE 1 - WiFi: edita estas dos variables con los datos de TU red
+// ===========================================================================
+const char* ssid     = "TU_WIFI";
+const char* password = "TU_PASSWORD";
+
+// Intenta conectar al WiFi de forma ACOTADA (no bloquea para siempre).
+// Maximo ~10 s (20 intentos x 500 ms); si falla, el Mochi arranca igual.
+void conectarWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  Serial.print("Conectando a WiFi");
+  int intentos = 0;
+  while (WiFi.status() != WL_CONNECTED && intentos < 20) {
+    delay(500);
+    Serial.print(".");
+    intentos++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("");
+    Serial.println("WiFi conectado");
+    Serial.print("IP: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("");
+    Serial.println("No se pudo conectar al WiFi");
+  }
+}
+
+// Muestra el resultado del WiFi en la OLED ~2 s antes de la animacion.
+void mostrarEstadoWiFi() {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x10_tr);
+  if (WiFi.status() == WL_CONNECTED) {
+    u8g2.drawStr(0, 20, "WiFi OK");
+    String ip = "IP: " + WiFi.localIP().toString();
+    u8g2.drawStr(0, 40, ip.c_str());
+  } else {
+    u8g2.drawStr(0, 20, "WiFi FAIL");
+    u8g2.drawStr(0, 40, "Sigo sin red...");
+  }
+  u8g2.sendBuffer();
+  delay(2000); // muestra el estado y luego empieza la animacion
+}
+
+// ===========================================================================
+//  FASE 1 - LED azul: parpadea cada 5 s SOLO cuando hay WiFi conectado.
+//  El LED azul integrado del ESP32-WROOM-32 esta en GPIO2 en la mayoria de
+//  los DevKit. Si en tu placa esta en otro pin, cambialo aqui.
+// ===========================================================================
+#define LED_WIFI                2      // GPIO2 = LED azul integrado
+#define LED_BLINK_CADA_MS       5000   // parpadeo cada 5 segundos
+#define LED_BLINK_DURACION_MS   100    // destello breve (100 ms encendido)
+
+unsigned long ledUltimoBlink   = 0;
+unsigned long ledEncendidoDesde = 0;
+bool          ledEncendido      = false;
+
+// Hace parpadear el LED azul sin usar delay(), para no frenar la animacion.
+void parpadeoWiFiLED() {
+  unsigned long ahora = millis();
+
+  // Sin WiFi: LED apagado.
+  if (WiFi.status() != WL_CONNECTED) {
+    if (ledEncendido) { digitalWrite(LED_WIFI, LOW); ledEncendido = false; }
+    return;
+  }
+
+  // Con WiFi: enciende un destello cada 5 s...
+  if (!ledEncendido && (ahora - ledUltimoBlink >= LED_BLINK_CADA_MS)) {
+    digitalWrite(LED_WIFI, HIGH);
+    ledEncendido      = true;
+    ledEncendidoDesde = ahora;
+    ledUltimoBlink    = ahora;
+  }
+
+  // ...y lo apaga tras el destello breve.
+  if (ledEncendido && (ahora - ledEncendidoDesde >= LED_BLINK_DURACION_MS)) {
+    digitalWrite(LED_WIFI, LOW);
+    ledEncendido = false;
+  }
+}
 
 
 // the code below was generated using the image2cpp website from images from Photopea/Rive
@@ -6166,11 +6252,22 @@ const unsigned char* epd_bitmap_allArray[90] = {
 int frame; // which image to display on the display
 
 void setup(void) {
-  u8g2.begin(); // start the u8g2 library
+  Serial.begin(115200);   // monitor serie para depurar (115200 baud)
+  delay(200);
+
+  pinMode(LED_WIFI, OUTPUT);     // LED azul integrado (GPIO2)
+  digitalWrite(LED_WIFI, LOW);   // empieza apagado
+
+  u8g2.begin();           // start the u8g2 library (OLED lista)
+
+  conectarWiFi();         // FASE 1: intenta conectar (acotado, no congela el Mochi)
+  mostrarEstadoWiFi();    // muestra WiFi OK + IP, o WiFi FAIL, ~2 s en la OLED
 }
 
 
 void loop(void) { // main loop
+
+  parpadeoWiFiLED(); // FASE 1: destello del LED azul cada 5 s si hay WiFi (no bloquea)
 
   frame++; // increase the frame number
   if (frame >= 90) {frame = 0;} // only go between 0-89, since we only have 90 images
