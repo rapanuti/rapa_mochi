@@ -33,11 +33,15 @@
 // --- Portal cautivo ---
 #define AP_SSID             "RapaMochi_Setup"
 
-// --- Botones fisicos (FUTURO; GPIO 25/26/27 limpios, soportan INPUT_PULLUP) ---
+// --- Botones fisicos (GPIO 25/26/27 limpios, soportan INPUT_PULLUP) ---
 #define BUTTON_1            25
 #define BUTTON_2            26
 #define BUTTON_3            27
 #define BTN_DEBOUNCE_MS     40
+
+// --- Comportamiento autonomo / personalidad (Fase 12) ---
+#define BEHAVIOR_TICK_MS    8000     // cada cuanto el Mochi "decide" algo estando idle
+#define BEHAVIOR_CHANCE     25       // % de probabilidad de reaccionar en cada tick
 
 // --- Almacenamiento NVS ---
 #define NVS_NAMESPACE       "rapamochi"
@@ -46,7 +50,8 @@
 //  Flags de managers (DESACTIVADOS por defecto -> compile-safe, sin libs extra)
 //  Cambiar a 1 cuando el hardware/lib correspondiente este listo.
 // ===========================================================================
-#define INPUT_ENABLED       0
+// Botones: seguro activarlo aunque no haya botones fisicos (INPUT_PULLUP => HIGH).
+#define INPUT_ENABLED       1
 #define MQTT_ENABLED        0
 #define SOUND_ENABLED       0
 #define VIBRATION_ENABLED   0
