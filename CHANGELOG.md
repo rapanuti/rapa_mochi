@@ -15,6 +15,18 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Bloque C — Hardware opcional: MQTT, vibrador, sonido, batería (Fases 8–11).**
+  Cada manager trae **código real completo** detrás de su flag (`MQTT_ENABLED`,
+  `VIBRATION_ENABLED`, `SOUND_ENABLED`, `BATTERY_ENABLED`), **desactivado por defecto**:
+  el build no requiere librerías extra hasta que actives uno.
+  - **MQTT** (`mqtt_manager`, PubSubClient): conecta al broker, se suscribe a
+    `MQTT_TOPIC_IN`, interpreta comandos (`happy`, `seq:happy:1000;sad:800`, o texto→
+    notificación) y publica estado en `MQTT_TOPIC_OUT`. Reconexión no bloqueante.
+  - **Vibrador** (`vibration_manager`): pulsos no bloqueantes (vía MOSFET/transistor).
+  - **Sonido** (`sound_manager`): tonos no bloqueantes en buzzer pasivo (ledc, core 3.x).
+  - **Batería** (`battery_manager`): mide 18650 por ADC1 con divisor, % con histéresis y
+    emite el evento `LOW_BATTERY` (→ cara triste) bajo umbral.
+  - Sus `update()` ya se llaman en el loop (no-op mientras estén desactivados).
 - **Bloque B — Botones + Eventos + Personalidad (Fases 6, 7 y 12).**
   - **Botones físicos** (`input_manager`, GPIO 25/26/27, `INPUT_PULLUP` + debounce +
     detección de flanco). Activado por defecto; es seguro aunque no haya botones
