@@ -12,6 +12,8 @@
 #include "event_manager.h"
 #include "behavior_manager.h"
 #include "notice_manager.h"
+#include "face_renderer.h"
+#include "display_manager.h"
 
 static WebServer web(80);
 static bool      started = false;
@@ -93,6 +95,8 @@ static const char PAGE_CSS[] PROGMEM =
   ".chip{display:inline-block;margin:4px 5px 0 0;padding:7px 13px;border:1px solid #d2d2d7;border-radius:980px;"
   "background:#fff;color:#1d1d1f;text-decoration:none;font-size:13px;cursor:pointer}"
   ".chip:active{background:#e8e8ed}.chip.on{background:#0071e3;color:#fff;border-color:#0071e3}"
+  ".pvchip{display:inline-flex;align-items:center;padding-left:6px}"
+  ".pv{width:34px;height:17px;margin-right:7px;image-rendering:pixelated;background:#000;border-radius:3px}"
   "button{font:inherit;background:#0071e3;color:#fff;border:none;border-radius:10px;padding:9px 16px;cursor:pointer;font-size:14px}"
   "button:active{opacity:.85}"
   "input,select{font:inherit;border:1px solid #d2d2d7;border-radius:10px;padding:8px 10px;background:#fff;color:#1d1d1f;margin:3px 0}"
@@ -114,11 +118,12 @@ static String pageStatus() {
   h += "<div class='row'><span class='muted'>Emocion actual</span><b>" + String(emotionName(emotionCurrent())) + "</b></div>";
   h += "</div>";
 
-  // --- Probar emociones ---
+  // --- Probar emociones (con miniatura de cada cara) ---
   h += "<div class='card'><h2>Probar emocion</h2>";
   for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++) {
     String n = emotionName((Emotion)i);
-    h += "<a class='chip' href='/emo?e=" + n + "'>" + n + "</a>";
+    h += "<a class='chip pvchip' href='/emo?e=" + n + "'>"
+         "<img class='pv' src='/face?e=" + n + "' loading='lazy'>" + n + "</a>";
   }
   h += "</div>";
 
@@ -304,6 +309,43 @@ static void handleNotice() {
   redirectHome();
 }
 
+// Miniatura de una emocion como BMP 1-bit 128x64 (blanco sobre negro).
+// Se dibuja en el buffer de la OLED; como esto corre ANTES del refresco del loop,
+// el siguiente render lo sobreescribe y la pantalla real no se altera.
+static void handleFace() {
+  if (!web.hasArg("e")) { web.send(404, "text/plain", ""); return; }
+  Emotion e = emotionFromName(web.arg("e"));
+  faceRender(e, millis());                 // dibuja la cara en el buffer (sin flush)
+  const uint8_t* buf = dispBuffer();        // 1024 B, layout vertical de U8g2
+
+  static uint8_t bmp[62 + 1024];
+  memset(bmp, 0, sizeof(bmp));
+  // --- Cabecera BMP (1 bpp, 128x64, bottom-up) ---
+  bmp[0] = 'B'; bmp[1] = 'M';
+  uint32_t fsize = sizeof(bmp);
+  bmp[2] = fsize; bmp[3] = fsize >> 8; bmp[4] = fsize >> 16; bmp[5] = fsize >> 24;
+  bmp[10] = 62;                 // offset a los datos
+  bmp[14] = 40;                 // tamano DIB header
+  bmp[18] = 128;                // ancho
+  bmp[22] = 64;                 // alto
+  bmp[26] = 1;                  // planos
+  bmp[28] = 1;                  // bits por pixel
+  bmp[34] = 0x00; bmp[35] = 0x04;  // tamano imagen = 1024
+  bmp[46] = 2; bmp[50] = 2;     // colores usados / importantes
+  // Paleta: 0 = negro (ya en 0), 1 = blanco
+  bmp[58] = 0xFF; bmp[59] = 0xFF; bmp[60] = 0xFF;
+  // --- Pixeles: filas de abajo hacia arriba, 16 bytes/fila, MSB = izquierda ---
+  for (int row = 0; row < 64; row++) {
+    int y = 63 - row;
+    uint8_t* dst = &bmp[62 + row * 16];
+    for (int x = 0; x < 128; x++) {
+      if ((buf[(y >> 3) * 128 + x] >> (y & 7)) & 1) dst[x >> 3] |= (0x80 >> (x & 7));
+    }
+  }
+  web.sendHeader("Cache-Control", "max-age=600");
+  web.send_P(200, PSTR("image/bmp"), (PGM_P)bmp, sizeof(bmp));
+}
+
 void webBegin() {
   if (started) return;
   web.on("/", handleRoot);
@@ -319,6 +361,7 @@ void webBegin() {
   web.on("/demo", handleDemo);
   web.on("/random", handleRandom);
   web.on("/notice", handleNotice);
+  web.on("/face", handleFace);
   web.begin();
   started = true;
   Serial.print(F("[WEB] panel en http://")); Serial.println(WiFi.localIP());

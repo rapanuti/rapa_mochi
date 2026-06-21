@@ -77,3 +77,5 @@ void dispTextSmall(int x, int y, const char* s) {
   u8g2.setFont(u8g2_font_6x10_tr);
   u8g2.drawStr(x, y, s);
 }
+
+const uint8_t* dispBuffer() { return u8g2.getBufferPtr(); }   // 1024 B (8 tiles x 128)
