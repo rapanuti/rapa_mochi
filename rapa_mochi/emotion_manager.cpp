@@ -128,7 +128,12 @@ Emotion emotionFromName(const String& s) {
 
 void emotionSetDefault(Emotion e) {
   baseEmo = e;
-  if (!emotionActive()) { if (e != current) beginTransition(); current = e; curDur = 0; curPrio = 0; }
+  // Aplica la nueva base AL INSTANTE (es una accion explicita del usuario),
+  // aunque haya una emocion en curso. Asi el panel refleja el cambio enseguida.
+  if (e != current) beginTransition();
+  current = e;
+  curDur  = 0;
+  curPrio = 0;
 }
 Emotion emotionDefault() { return baseEmo; }
 
