@@ -15,6 +15,24 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Arquitectura modular (refactor mayor).** El sketch de un solo archivo se dividió en
+  módulos (pestañas de Arduino IDE): `config.h`, `mochi_frames.{h,cpp}` (los 90 frames
+  movidos **verbatim**, hash idéntico), `display_manager`, `animation_manager`,
+  `led_status`, `storage_manager` (NVS), `wifi_manager` (con **portal cautivo propio**),
+  y stubs preparados y desactivados: `emotion_manager`, `event_manager`, `input_manager`,
+  `mqtt_manager`, `sound_manager`, `vibration_manager`, `battery_manager`,
+  `web_config_server`. El `.ino` quedó como orquestador (135 líneas) con una **máquina de
+  estados de arranque** no bloqueante.
+- **Saludo inicial** "Hola / Soy Rapa Mochi" al encender, antes de la animación.
+- **Portal cautivo WiFi propio** (sin librerías externas: `WebServer` + `DNSServer` +
+  `Preferences`): AP **`RapaMochi_Setup`**, lista de redes + SSID manual, guarda en NVS y
+  reinicia. Si no hay/falla el WiFi, no bloquea la animación.
+- **Credenciales en NVS** (namespace `rapamochi`); `secrets.h` queda solo como *fallback*
+  del primer arranque.
+- Documentación en `docs/`: `hardware.md`, `arduino_setup.md`, `wifi_portal.md`, `roadmap.md`
+  (roadmap completo de 13 fases).
+- Soporte preparado (desactivado) para **3 botones** (GPIO 25/26/27) y managers de
+  MQTT/sonido/vibración/batería con flags `*_ENABLED`.
 - **Fase 1 del roadmap — WiFi + IP en OLED.** `rapa_mochi.ino` ahora se conecta al WiFi
   al arrancar (función `conectarWiFi()` acotada a ~10 s para no congelar la animación) y
   muestra en la OLED `WiFi OK` + la IP, o `WiFi FAIL`, durante ~2 s antes de la animación.
