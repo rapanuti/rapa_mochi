@@ -7,7 +7,8 @@
 void dispBegin();                       // Wire 21/22, addr 0x3C, 400kHz, R0
 void dispGreeting();                    // "Hola" / "Soy Rapa Mochi"
 void dispConnecting();                  // "Conectando WiFi..."
-void dispPortal(const String& apIp);    // "Config WiFi" + RapaMochi_Setup + IP
+void dispCreatingAP();                   // "Sin WiFi / Creando red" mientras levanta el portal
+void dispPortal(const String& apIp);    // cara + RapaMochi_Setup + IP del portal
 void dispWifiOk(const String& ip);      // "WiFi OK" + "IP: x.x.x.x"
 void dispWifiFail();                    // "WiFi FAIL"
 void dispSaved();                       // "Guardado / Reiniciando..."

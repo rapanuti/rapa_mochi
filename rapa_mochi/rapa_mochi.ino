@@ -124,7 +124,8 @@ void loop() {
           break;
         case WT_TIMEOUT:
           eventPost(EventType::WIFI_FAILED);
-          wifiStartPortal();                   // abre AP RapaMochi_Setup
+          dispCreatingAP();                    // "Sin WiFi / Creando red" durante el escaneo
+          wifiStartPortal();                   // abre AP RapaMochi_Setup (bloquea ~2s)
           bootState = BOOT_PORTAL; tEstado = now;
           break;
         default:                               // WT_CONNECTING: seguir esperando
