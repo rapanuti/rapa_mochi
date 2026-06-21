@@ -69,7 +69,7 @@ here is explained step by step.
 | Carpeta / Folder | Qué es / What it is |
 |------------------|---------------------|
 | [`rapa_mochi/`](rapa_mochi/) | Sketch principal **modular** para ESP32-WROOM-32 (managers + portal cautivo WiFi). |
-| [`docs/`](docs/) | [hardware](docs/hardware.md) · [setup Arduino](docs/arduino_setup.md) · [portal WiFi](docs/wifi_portal.md) · [panel web](docs/web_panel.md) · [n8n / IA](docs/n8n_integration.md) · [roadmap](docs/roadmap.md). |
+| [`docs/`](docs/) | [hardware](docs/hardware.md) · [conexiones](docs/wiring.md) · [setup Arduino](docs/arduino_setup.md) · [portal WiFi](docs/wifi_portal.md) · [panel web](docs/web_panel.md) · [n8n / IA](docs/n8n_integration.md) · [roadmap](docs/roadmap.md). |
 | [`minimal_rapa_mochi/`](minimal_rapa_mochi/) | Versión mínima de referencia (solo OLED) con control de FPS y splash. |
 | `RIVE_*`, `PHOTOPEA_*` | Recursos de la animación (Rive / Photopea). |
 
