@@ -101,6 +101,12 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **Panel web rediseñado estilo macOS**: tarjetas blancas redondeadas, fuente del sistema,
+  acento azul, chips y toggles ON/OFF resaltados. Se añadió `<meta charset="utf-8">` (el
+  emoji del título ya se ve bien).
+- **Fix:** al guardar la *emoción por defecto* desde la web, ahora se refleja **al
+  instante** en la OLED (antes esperaba a la siguiente emoción).
+- La **emoción de prueba** del panel dura **3 s** (`WEB_TEST_MS`) y se muestra siempre.
 - **20 caras nuevas del catálogo Dasai Mochi** (total 33): smile, laugh, uwu, raspberry,
   sakura, rainbow, dumb_love, love, distracted, sneeze, squint, look_down, shift, bee,
   gtr_rain, neon_tube, **pong** (juego animado), **rotation** (ojos girando), gforce, splat.

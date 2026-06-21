@@ -56,101 +56,117 @@ static String allEmotionOptions() {
   return o;
 }
 
+// Fila de toggle ON/OFF estilo macOS (resalta el estado activo).
+static String pill(const char* label, const char* path, bool on) {
+  return "<div class='row'><span class='muted'>" + String(label) + "</span><span>"
+       + "<a class='chip" + String(on ? " on" : "") + "' href='" + path + "?on=1'>ON</a>"
+       + "<a class='chip" + String(!on ? " on" : "") + "' href='" + path + "?on=0'>OFF</a>"
+       + "</span></div>";
+}
+
+static const char PAGE_CSS[] PROGMEM =
+  "<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'>"
+  "<meta name='viewport' content='width=device-width,initial-scale=1'><title>Rapa Mochi</title>"
+  "<style>"
+  "*{box-sizing:border-box}"
+  "body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;"
+  "background:#f5f5f7;color:#1d1d1f;margin:0;padding:22px 14px;-webkit-font-smoothing:antialiased}"
+  ".wrap{max-width:540px;margin:0 auto}"
+  "h1{font-size:26px;font-weight:600;text-align:center;margin:0 0 18px}"
+  ".card{background:#fff;border-radius:16px;padding:16px 18px;margin:14px 0;box-shadow:0 1px 4px rgba(0,0,0,.08)}"
+  ".card h2{font-size:12px;font-weight:600;color:#86868b;text-transform:uppercase;letter-spacing:.06em;margin:0 0 12px}"
+  ".row{display:flex;justify-content:space-between;align-items:center;font-size:15px;padding:4px 0}"
+  ".muted{color:#86868b}"
+  ".chip{display:inline-block;margin:4px 5px 0 0;padding:7px 13px;border:1px solid #d2d2d7;border-radius:980px;"
+  "background:#fff;color:#1d1d1f;text-decoration:none;font-size:13px;cursor:pointer}"
+  ".chip:active{background:#e8e8ed}.chip.on{background:#0071e3;color:#fff;border-color:#0071e3}"
+  "button{font:inherit;background:#0071e3;color:#fff;border:none;border-radius:10px;padding:9px 16px;cursor:pointer;font-size:14px}"
+  "button:active{opacity:.85}"
+  "input,select{font:inherit;border:1px solid #d2d2d7;border-radius:10px;padding:8px 10px;background:#fff;color:#1d1d1f;margin:3px 0}"
+  "input{width:100%}form{margin:8px 0}label,small{color:#86868b;font-size:13px}"
+  ".bgrp{padding:10px 0;border-top:1px solid #f0f0f2}code{background:#f0f0f2;padding:1px 5px;border-radius:5px}"
+  "</style></head><body><div class='wrap'>";
+
 static String pageStatus() {
-  String h = F("<!DOCTYPE html><html><head>"
-               "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-               "<title>Rapa Mochi</title>"
-               "<style>body{font-family:sans-serif;max-width:480px;margin:auto;padding:12px}"
-               "a.btn,button{display:inline-block;margin:3px;padding:8px 10px;border:1px solid #888;"
-               "border-radius:6px;background:#f4f4f4;text-decoration:none;color:#111;cursor:pointer}"
-               "fieldset{margin:12px 0}input,select{padding:6px}</style></head><body>");
-  h += "<h2>🐱 Rapa Mochi</h2>";
+  String h = FPSTR(PAGE_CSS);
+  h += "<h1>🐱 Rapa Mochi</h1>";
 
   // --- Estado ---
-  h += "<fieldset><legend><b>Estado</b></legend>";
-  h += "IP: <b>" + WiFi.localIP().toString() + "</b><br>";
-  h += "WiFi: <b>" + String(WiFi.status() == WL_CONNECTED ? "conectado" : "desconectado") + "</b><br>";
-  h += "Heap libre: <b>" + String(ESP.getFreeHeap()) + "</b> bytes<br>";
-  h += "Uptime: <b>" + uptimeStr() + "</b><br>";
-  h += "Firmware: <b>" FW_VERSION "</b><br>";
-  h += "Emocion actual: <b>" + String(emotionName(emotionCurrent())) + "</b>";
-  h += "</fieldset>";
+  h += "<div class='card'><h2>Estado</h2>";
+  h += "<div class='row'><span class='muted'>IP</span><b>" + WiFi.localIP().toString() + "</b></div>";
+  h += "<div class='row'><span class='muted'>WiFi</span><b>" + String(WiFi.status() == WL_CONNECTED ? "conectado" : "desconectado") + "</b></div>";
+  h += "<div class='row'><span class='muted'>Heap libre</span><b>" + String(ESP.getFreeHeap()) + " B</b></div>";
+  h += "<div class='row'><span class='muted'>Uptime</span><b>" + uptimeStr() + "</b></div>";
+  h += "<div class='row'><span class='muted'>Firmware</span><b>" FW_VERSION "</b></div>";
+  h += "<div class='row'><span class='muted'>Emocion actual</span><b>" + String(emotionName(emotionCurrent())) + "</b></div>";
+  h += "</div>";
 
   // --- Probar emociones ---
-  h += "<fieldset><legend><b>Probar emocion</b></legend>";
+  h += "<div class='card'><h2>Probar emocion</h2>";
   for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++) {
     String n = emotionName((Emotion)i);
-    h += "<a class='btn' href='/emo?e=" + n + "'>" + n + "</a>";
+    h += "<a class='chip' href='/emo?e=" + n + "'>" + n + "</a>";
   }
-  h += "</fieldset>";
+  h += "</div>";
 
-  // --- Emocion por defecto + saludo ---
-  int greet = storageGetInt("greet", 1);
-  h += "<fieldset><legend><b>Configuracion</b></legend>";
-  h += "<form action='/setdefault' method='GET'>Emocion por defecto: "
+  // --- Configuracion ---
+  h += "<div class='card'><h2>Configuracion</h2>";
+  h += "<form action='/setdefault' method='GET'><label>Emocion por defecto</label><br>"
        "<select name='e'>" + defaultEmotionOptions(emotionDefault()) + "</select> "
        "<button type='submit'>Guardar</button></form>";
-  h += "<p>Saludo inicial: <b>" + String(greet ? "ON" : "OFF") + "</b> &nbsp;"
-       "<a class='btn' href='/greeting?on=1'>ON</a>"
-       "<a class='btn' href='/greeting?on=0'>OFF</a></p>";
-  h += "</fieldset>";
+  h += pill("Saludo inicial", "/greeting", storageGetInt("greet", 1));
+  h += "</div>";
 
   // --- Secuencias ---
-  h += "<fieldset><legend><b>Secuencias</b></legend>";
+  h += "<div class='card'><h2>Secuencias</h2>";
   for (int i = 0; i < seqSlots(); i++) {
     String nm = seqName(i);
-    h += String(i) + ": <b>" + (nm.length() ? nm : String("(vacio)")) + "</b> ";
-    h += "<small>" + seqData(i) + "</small> ";
-    if (seqData(i).length()) h += "<a class='btn' href='/seqplay?i=" + String(i) + "'>play</a>";
-    h += "<br>";
+    h += "<div class='row'><span><b>" + String(i) + "</b> " + (nm.length() ? nm : String("(vacio)"))
+       + " <span class='muted'>" + seqData(i) + "</span></span>";
+    if (seqData(i).length()) h += "<a class='chip' href='/seqplay?i=" + String(i) + "'>play</a>";
+    h += "</div>";
   }
-  h += "<form action='/seqsave' method='GET'>Guardar en slot "
-       "<select name='i'>";
+  h += "<form action='/seqsave' method='GET'><label>Guardar en slot</label> <select name='i'>";
   for (int i = 0; i < seqSlots(); i++) h += "<option value='" + String(i) + "'>" + String(i) + "</option>";
-  h += "</select><br>nombre <input name='name' placeholder='mi_secuencia'><br>"
-       "datos <input name='data' size='30' placeholder='happy:1000;surprised:600;sad:800'><br>"
+  h += "</select><input name='name' placeholder='nombre de la secuencia'>"
+       "<input name='data' placeholder='happy:1000;surprised:600;sad:800'>"
        "<button type='submit'>Guardar</button></form>";
-  h += "<form action='/seqtest' method='GET'>Probar sin guardar: "
-       "<input name='data' size='30' placeholder='happy:800;angry:800'>"
+  h += "<form action='/seqtest' method='GET'><label>Probar sin guardar</label>"
+       "<input name='data' placeholder='happy:800;angry:800'>"
        "<button type='submit'>Probar</button></form>";
-  h += "</fieldset>";
+  h += "</div>";
 
   // --- Botones + personalidad ---
-  h += "<fieldset><legend><b>Botones y personalidad</b></legend>";
+  h += "<div class='card'><h2>Botones y personalidad</h2>";
   for (int b = 0; b < 3; b++) {
     ActionType a = eventButtonActionType(b);
     int p = eventButtonActionParam(b);
     String cur = String(actionTypeName(a));
     if (a == ActionType::EMOTION)       cur += " (" + String(emotionName((Emotion)p)) + ")";
     else if (a == ActionType::SEQUENCE) cur += " (slot " + String(p) + ")";
-    h += "Boton " + String(b + 1) + ": <b>" + cur + "</b><br>";
+    h += "<div class='bgrp'><div class='row'><span class='muted'>Boton " + String(b + 1) + "</span><b>" + cur + "</b></div>";
     h += "<form action='/btnset' method='GET'>"
          "<input type='hidden' name='b' value='" + String(b) + "'>"
-         "accion <select name='a'>"
-         "<option value='none'>none</option><option value='emotion'>emotion</option>"
+         "<select name='a'><option value='none'>none</option><option value='emotion'>emotion</option>"
          "<option value='sequence'>sequence</option><option value='status'>status</option></select> "
-         "emo <select name='emo'>" + allEmotionOptions() + "</select> "
-         "seq <select name='seq'>";
+         "<select name='emo'>" + allEmotionOptions() + "</select> "
+         "<select name='seq'>";
     for (int s = 0; s < seqSlots(); s++) h += "<option value='" + String(s) + "'>" + String(s) + "</option>";
-    h += "</select> <button type='submit'>Set</button></form>";
+    h += "</select> <button type='submit'>Set</button></form></div>";
   }
-  h += "<p>Personalidad autonoma: <b>" + String(behaviorEnabled() ? "ON" : "OFF") + "</b> "
-       "<a class='btn' href='/behavior?on=1'>ON</a>"
-       "<a class='btn' href='/behavior?on=0'>OFF</a></p>";
-  h += "<p>Modo demo (recorre TODAS las caras): <b>" + String(behaviorDemo() ? "ON" : "OFF") + "</b> "
-       "<a class='btn' href='/demo?on=1'>ON</a>"
-       "<a class='btn' href='/demo?on=0'>OFF</a></p>";
-  h += "</fieldset>";
+  h += pill("Personalidad autonoma", "/behavior", behaviorEnabled());
+  h += pill("Modo demo (todas las caras)", "/demo", behaviorDemo());
+  h += "</div>";
 
-  // --- Mensaje en la OLED (texto / IA externa) ---
-  h += "<fieldset><legend><b>Mensaje en pantalla</b></legend>";
+  // --- Mensaje en pantalla ---
+  h += "<div class='card'><h2>Mensaje en pantalla</h2>";
   h += "<form action='/notice' method='GET'>"
-       "<input name='text' size='28' placeholder='Hola, soy Rapa Mochi'> "
+       "<input name='text' placeholder='Hola, soy Rapa Mochi'>"
        "<button type='submit'>Mostrar</button></form>";
   h += "<small>Tambien por MQTT: publica <code>text:tu mensaje</code> en el topic de entrada.</small>";
-  h += "</fieldset>";
+  h += "</div>";
 
-  h += "</body></html>";
+  h += "</div></body></html>";
   return h;
 }
 
