@@ -15,6 +15,12 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Cara de WiFi en el arranque**: la pantalla de conexión muestra una **mini-cara**
+  (feliz si hay WiFi, triste si no) con la **IP centrada debajo**; el portal cautivo
+  muestra la cara triste + la red `RapaMochi_Setup` y su IP. Hay también pantalla
+  "Sin internet".
+- **Mensajes en pantalla centrados**: el texto de "Mensaje en pantalla" ahora se centra
+  horizontal y verticalmente en la OLED (antes salía arriba-izquierda).
 - **Bloque D — Integración con n8n / IA externa (Fase 13).**
   - **Mensajes en pantalla** (`notice_manager`): muestra texto arbitrario en la OLED con
     ajuste de línea, con prioridad sobre emoción/animación. Pensado para respuestas

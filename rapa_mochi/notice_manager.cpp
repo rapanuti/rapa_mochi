@@ -20,25 +20,34 @@ bool noticeActive(uint32_t now) {
 
 void noticeRender() {
   dispClear();
-  const int  MAXC   = 21;                       // ~21 chars a fuente 6x10 en 128px
-  const int  YS[]   = { 10, 22, 34, 46, 58 };
-  const int  MAXL   = 5;
-  int        line   = 0;
-  String     cur    = "";
+  const int MAXC = 20, MAXL = 5;        // ~20 chars/linea a 6x10 en 128px
+  String lines[MAXL];
+  int    nL = 0;
 
+  // 1) Partir el texto en lineas por palabras.
   String t = text;
   t.replace('\n', ' ');
+  String cur = "";
   int pos = 0;
-  while (pos <= (int)t.length() && line < MAXL) {
+  while (pos <= (int)t.length() && nL < MAXL) {
     int    sp   = t.indexOf(' ', pos);
     String word = (sp < 0) ? t.substring(pos) : t.substring(pos, sp);
-    if (cur.length() == 0)                           cur = word;
+    if (cur.length() == 0)                                    cur = word;
     else if ((int)(cur.length() + 1 + word.length()) <= MAXC) cur += " " + word;
-    else { dispTextSmall(0, YS[line++], cur.c_str()); cur = word; }
+    else { lines[nL++] = cur; cur = word; }
     if (sp < 0) break;
     pos = sp + 1;
   }
-  if (line < MAXL && cur.length() > 0) dispTextSmall(0, YS[line], cur.c_str());
+  if (nL < MAXL && cur.length() > 0) lines[nL++] = cur;
 
+  // 2) Dibujar centrado vertical y horizontalmente.
+  if (nL > 0) {
+    int startY = (64 - nL * 12) / 2 + 9;          // baseline de la 1a linea
+    for (int i = 0; i < nL; i++) {
+      int x = (128 - 6 * (int)lines[i].length()) / 2;
+      if (x < 0) x = 0;
+      dispTextSmall(x, startY + i * 12, lines[i].c_str());
+    }
+  }
   dispFlush();
 }

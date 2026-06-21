@@ -183,12 +183,6 @@ static String pageStatus() {
   h += pill("Modo demo (todas las caras)", "/demo", behaviorDemo());
   h += "</div>";
 
-  // --- Aleatorio ---
-  h += "<div class='card'><h2>Aleatorio</h2>";
-  h += pill("Emociones al azar (duracion variable, loop)", "/random", behaviorRandom());
-  h += "<small>El Mochi va eligiendo una emocion al azar (3-8 s cada una) sin parar.</small>";
-  h += "</div>";
-
   // --- Mensaje en pantalla ---
   h += "<div class='card'><h2>Mensaje en pantalla</h2>";
   h += "<form action='/notice' method='GET'>"
@@ -299,10 +293,6 @@ static void handleDemo() {
   redirectHome();
 }
 
-static void handleRandom() {
-  if (web.hasArg("on")) { seqStop(); behaviorSetRandom(web.arg("on").toInt() != 0); }
-  redirectHome();
-}
 
 static void handleNotice() {
   if (web.hasArg("text")) noticeShow(web.arg("text"));
@@ -359,7 +349,6 @@ void webBegin() {
   web.on("/btnset", handleBtnSet);
   web.on("/behavior", handleBehavior);
   web.on("/demo", handleDemo);
-  web.on("/random", handleRandom);
   web.on("/notice", handleNotice);
   web.on("/face", handleFace);
   web.begin();
