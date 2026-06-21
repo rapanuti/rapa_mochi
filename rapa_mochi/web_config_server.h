@@ -1,10 +1,10 @@
 // ===========================================================================
-//  web_config_server.h  -  (POST-MVP) UI web local de estado/test/config.
-//  Esqueleto inerte: NO instancia WebServer:80 todavia para no chocar con el portal.
-//  Se implementa cuando el dispositivo ya esta conectado a WiFi (modo STA).
+//  web_config_server.h  -  UI web local (Fase 4): estado, prueba de emociones,
+//  emocion por defecto, saludo on/off y secuencias. WebServer:80, solo en STA.
+//  Se arranca cuando el dispositivo ya esta conectado (nunca a la vez que el portal).
 // ===========================================================================
 #pragma once
 
-void webBegin();    // arranca el WebServer:80 (futuro)
-void webUpdate();   // server.handleClient() (futuro)
+void webBegin();    // registra rutas y arranca el WebServer:80
+void webUpdate();   // server.handleClient() (llamar en loop)
 void webStop();

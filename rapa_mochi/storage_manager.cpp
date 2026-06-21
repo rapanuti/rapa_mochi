@@ -32,3 +32,30 @@ void storageClearWiFi() {
   prefs.remove("pass");
   prefs.end();
 }
+
+// --- KV generico ------------------------------------------------------------
+void storagePutString(const char* key, const String& v) {
+  prefs.begin(NVS_NAMESPACE, false);
+  prefs.putString(key, v);
+  prefs.end();
+}
+
+String storageGetString(const char* key, const String& def) {
+  prefs.begin(NVS_NAMESPACE, true);
+  String v = prefs.getString(key, def);
+  prefs.end();
+  return v;
+}
+
+void storagePutInt(const char* key, int v) {
+  prefs.begin(NVS_NAMESPACE, false);
+  prefs.putInt(key, v);
+  prefs.end();
+}
+
+int storageGetInt(const char* key, int def) {
+  prefs.begin(NVS_NAMESPACE, true);
+  int v = prefs.getInt(key, def);
+  prefs.end();
+  return v;
+}
