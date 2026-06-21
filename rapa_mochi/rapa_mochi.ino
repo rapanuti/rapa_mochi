@@ -160,7 +160,12 @@ void loop() {
       emotionUpdate(now);                      // expira la emocion -> base
       if (emotionActive()) emotionRender(now); // cara procedural (happy/sad/...)
       else                 animRenderNext();   // animacion Mochi (idle, 90 frames)
-      // Futuro: mqttUpdate(); soundUpdate(); vibrationUpdate(); batteryUpdate();
+
+      // Managers de hardware (no-op si su *_ENABLED es 0):
+      mqttUpdate();
+      soundUpdate();
+      vibrationUpdate();
+      batteryUpdate();
       break;
   }
 }

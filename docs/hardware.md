@@ -45,3 +45,19 @@
 - **Sonido:** parlante 4–8 Ω con amplificador **MAX98357A (I2S)** o **PAM8403**, fuente estable. El GPIO solo no mueve un parlante real.
 - **Batería 18650 / LiPo:** módulo de carga con **protección** (**TP4056** con protección), interruptor físico, medición por **divisor resistivo** a ADC1, y caja segura. No cargar litio sin protección.
 - **Sensor/botón táctil o piezo:** entrada táctil capacitiva (`touchRead`) o piezo con acondicionamiento; pendiente de fase.
+
+## Activar managers opcionales (Bloque C)
+
+Cada uno se activa cambiando su flag en `config.h` (de `0` a `1`). Por defecto están en `0`
+y el firmware compila sin librerías extra.
+
+| Manager | Flag | Pin | Hardware / lib necesarios |
+|---------|------|-----|---------------------------|
+| MQTT | `MQTT_ENABLED` | WiFi | Librería **PubSubClient** + broker. Configura `MQTT_SERVER/PORT/USER/PASSWORD/TOPIC_IN/TOPIC_OUT`. |
+| Vibrador | `VIBRATION_ENABLED` | 13 | Motor + **MOSFET/transistor** (NO directo al GPIO) + **diodo flyback** + R en base/gate. |
+| Sonido | `SOUND_ENABLED` | 14 | **Buzzer pasivo** directo, o **PAM8403/MAX98357A** + parlante 4–8 Ω + fuente estable. |
+| Batería | `BATTERY_ENABLED` | 34 | 18650 + **TP4056 con protección** + **divisor 2×100k** de Vbat a GPIO34. Ajusta `BATTERY_DIVIDER/MIN/MAX`. |
+
+> Tras activar un flag, su `update()` (ya llamado en el loop) empieza a funcionar.
+> El evento `LOW_BATTERY` muestra cara triste; los comandos MQTT pueden disparar emociones
+> o secuencias (ver [comandos en mqtt_manager](../rapa_mochi/mqtt_manager.cpp)).

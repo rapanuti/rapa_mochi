@@ -29,17 +29,17 @@ De un sketch visual a un companion modular, configurable e interactivo.
 ## Fase 7 — Reglas / eventos ✅
 - `event_manager` asocia eventos con emociones/secuencias. Reglas por defecto para wifi, piezo, temperatura, batería y MQTT (estas últimas se activarán al integrar su hardware/infra).
 
-## Fase 8 — MQTT
-- Integración con **n8n / Home Assistant / Node-RED**; recibir comandos y publicar estado.
+## Fase 8 — MQTT ✅ (código; activar con `MQTT_ENABLED 1`)
+- Cliente MQTT (PubSubClient): recibe comandos en `MQTT_TOPIC_IN`, publica estado en `MQTT_TOPIC_OUT`. Base para n8n / Home Assistant / Node-RED (ver Fase 13).
 
-## Fase 9 — Vibración
-- Motor vibrador vía transistor/MOSFET; asociar vibración a eventos.
+## Fase 9 — Vibración ✅ (código; activar con `VIBRATION_ENABLED 1`)
+- Pulsos no bloqueantes vía transistor/MOSFET + diodo flyback. Asociado a eventos.
 
-## Fase 10 — Sonido
-- Parlante con amplificador (MAX98357A I2S / PAM8403); sonidos por emoción.
+## Fase 10 — Sonido ✅ (código; activar con `SOUND_ENABLED 1`)
+- Tonos en buzzer pasivo (ledc). Para audio real: PAM8403 / MAX98357A I2S + parlante.
 
-## Fase 11 — Batería
-- 18650 segura (TP4056 con protección), medición y alertas de batería baja.
+## Fase 11 — Batería ✅ (código; activar con `BATTERY_ENABLED 1`)
+- 18650 con TP4056 protegido + divisor a ADC1; medición, histéresis y evento de batería baja.
 
 ## Fase 12 — Inteligencia simulada
 - Estados internos, reacciones automáticas, personalidad básica, rutinas por horario.
