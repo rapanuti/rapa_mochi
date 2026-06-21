@@ -5,11 +5,20 @@
 #include "emotion_manager.h"
 #include "sequence_manager.h"
 #include "storage_manager.h"
+#include "mqtt_manager.h"        // publicar eventos hacia n8n (no-op si MQTT off)
 
 struct Action { ActionType type; int param; };
 static Action btn[3];
 
 static const char* ACT_NAMES[] = { "none", "emotion", "sequence", "status" };
+
+// Nombres de eventos (mismo orden que EventType) para publicarlos por MQTT.
+static const char* EV_NAMES[] = {
+  "boot", "wifi_connected", "wifi_failed",
+  "button_1", "button_2", "button_3",
+  "web_command", "mqtt_message", "piezo_tap",
+  "temp_hot", "temp_cold", "low_battery",
+};
 
 const char* actionTypeName(ActionType a) { return ACT_NAMES[(uint8_t)a]; }
 
@@ -67,6 +76,9 @@ static bool runAction(const Action& a) {
 
 bool eventPost(EventType t, int32_t payload) {
   (void)payload;
+  // Publica el evento hacia n8n (no-op si MQTT esta desactivado/sin conexion).
+  if ((uint8_t)t < (uint8_t)EventType::COUNT)
+    mqttPublish((String("event:") + EV_NAMES[(uint8_t)t]).c_str());
   switch (t) {
     case EventType::BUTTON_1_PRESSED: return runAction(btn[0]);
     case EventType::BUTTON_2_PRESSED: return runAction(btn[1]);
