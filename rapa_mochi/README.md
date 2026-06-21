@@ -85,6 +85,10 @@ El proyecto fue **probado correctamente** con esta configuración en **Arduino I
 > ✅ **Fase 1 ya implementada.** El sketch `rapa_mochi.ino` **ya incluye el WiFi**: al
 > arrancar intenta conectarse y muestra en la OLED `WiFi OK` + la IP (o `WiFi FAIL`)
 > durante ~2 s, y luego empieza la animación. **Solo tienes que editar tu red.**
+>
+> 💡 Además, el **LED azul integrado (GPIO2)** parpadea un destello cada **5 s** mientras
+> haya WiFi conectado, como indicador visual. Si en tu placa el LED está en otro pin,
+> cambia `#define LED_WIFI 2` al inicio del sketch.
 
 Conecta el ESP32 a tu WiFi cambiando estas dos **variables editables** al inicio del sketch
 (cerca de la línea donde se inicializa la OLED):
