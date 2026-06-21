@@ -11,20 +11,24 @@ _Your little Mochi desk companion, built with an ESP32 and an OLED display._
 
 ## 🇪🇸 ¿Qué es esto?
 
-**rapa_mochi** es una carita **Dasai Mochi** que vive en una pantallita OLED y te
-acompaña en el escritorio. Por ahora sonríe y parpadea en bucle, pero está pensado
-para **ir creciendo**: conectarse al WiFi, saber la hora, reaccionar a eventos y, más
-adelante, sentir tu tacto, vibrar y tener su propia carcasa.
+**rapa_mochi** es un compañero **Dasai Mochi** que vive en una pantallita OLED. Tiene
+una **arquitectura modular** y un montón de funciones: **33 caras** (animación Mochi +
+emociones procedurales con transiciones), **portal cautivo WiFi**, un **panel web** para
+controlarlo, **botones** configurables, **personalidad autónoma**, e integración con
+**MQTT / n8n** para mostrar mensajes de IA. Además trae preparado (desactivado) el código
+de **vibrador, sonido y batería 18650**.
 
 Está pensado para **makers principiantes**: si nunca has programado un ESP32, aquí
 encuentras todo explicado paso a paso.
 
 ## 🇬🇧 What is this?
 
-**rapa_mochi** is a **Dasai Mochi** face living on a small OLED screen — a tiny desk
-companion. Right now it smiles and blinks in a loop, but it's designed to **grow**:
-connect to WiFi, tell the time, react to events and — later — sense your touch,
-vibrate and get its own enclosure.
+**rapa_mochi** is a **Dasai Mochi** companion living on a small OLED screen. It has a
+**modular architecture** and lots of features: **33 faces** (Mochi animation + procedural
+emotions with blink transitions), a **WiFi captive portal**, a **web panel** to control it,
+configurable **buttons**, an **autonomous personality**, and **MQTT / n8n** integration to
+show AI messages. It also ships ready-but-disabled code for **vibration, sound and an
+18650 battery**.
 
 It's aimed at **beginner makers**: if you've never flashed an ESP32 before, everything
 here is explained step by step.
@@ -33,11 +37,17 @@ here is explained step by step.
 
 ## ✨ Características / Features
 
-- 🐱 Animación de la cara Mochi (90 cuadros, 128×64) en OLED SSD1306.
-- 🔌 Pensado para el **ESP32-WROOM-32 clásico** (ESP32 Dev Module).
-- 📶 Listo para crecer: guía de **WiFi**, hora por NTP y más (ver Roadmap).
-- 📖 Documentación **paso a paso** para principiantes.
-- 🆓 Software libre (MIT) — úsalo, modifícalo y comparte.
+- 🐱 **Animación Mochi** (90 cuadros, 128×64) + **33 caras/emociones** procedurales con
+  **transiciones tipo parpadeo** (varias animadas: pong, ojos girando, pétalos, lluvia…).
+- 📶 **Portal cautivo WiFi** propio (AP `RapaMochi_Setup`) — sin librerías externas.
+- 🖥️ **Panel web local**: estado del dispositivo, probar emociones, secuencias, emoción
+  por defecto, configurar botones y enviar mensajes a la pantalla.
+- 🎬 **Secuencias** de emociones con nombre (guardadas en NVS).
+- 🔘 **3 botones** configurables + **personalidad autónoma** (reacciones espontáneas).
+- 🔗 **MQTT / n8n / Home Assistant**: comandos y mensajes de IA, publicación de estado/eventos.
+- 🔌 **Vibrador, sonido y batería 18650**: código listo, activable por flags.
+- 🧩 **Arquitectura modular** (managers) — fácil de extender. 🆓 Software libre (MIT).
+- 📖 Documentación **paso a paso** para principiantes. Probado en **ESP32-WROOM-32**.
 
 ---
 
@@ -59,17 +69,23 @@ here is explained step by step.
 | Carpeta / Folder | Qué es / What it is |
 |------------------|---------------------|
 | [`rapa_mochi/`](rapa_mochi/) | Sketch principal **modular** para ESP32-WROOM-32 (managers + portal cautivo WiFi). |
-| [`docs/`](docs/) | Documentación: [hardware](docs/hardware.md), [setup Arduino](docs/arduino_setup.md), [portal WiFi](docs/wifi_portal.md), [roadmap](docs/roadmap.md). |
+| [`docs/`](docs/) | [hardware](docs/hardware.md) · [setup Arduino](docs/arduino_setup.md) · [portal WiFi](docs/wifi_portal.md) · [panel web](docs/web_panel.md) · [n8n / IA](docs/n8n_integration.md) · [roadmap](docs/roadmap.md). |
 | [`minimal_rapa_mochi/`](minimal_rapa_mochi/) | Versión mínima de referencia (solo OLED) con control de FPS y splash. |
 | `RIVE_*`, `PHOTOPEA_*` | Recursos de la animación (Rive / Photopea). |
 
 ### 🧩 Arquitectura modular / Modular architecture
 
-El sketch está dividido en módulos (aparecen como pestañas en Arduino IDE):
-`display_manager`, `animation_manager`, `wifi_manager` (+ portal cautivo), `storage_manager`
-(NVS), `led_status`, y stubs preparados para crecer: `emotion_manager`, `event_manager`,
-`input_manager` (botones), `mqtt_manager`, `sound_manager`, `vibration_manager`,
-`battery_manager`, `web_config_server`. El `.ino` es solo el orquestador (boot + loop).
+El sketch está dividido en módulos (pestañas en Arduino IDE); el `.ino` es solo el
+orquestador (boot + loop):
+
+- **Núcleo:** `display_manager`, `animation_manager`, `face_renderer` (caras procedurales),
+  `emotion_manager` (+ transiciones), `sequence_manager`, `notice_manager` (mensajes),
+  `led_status`.
+- **Conectividad:** `wifi_manager` (+ portal cautivo), `web_config_server`, `mqtt_manager`,
+  `storage_manager` (NVS).
+- **Interacción:** `input_manager` (botones), `event_manager` (reglas), `behavior_manager`
+  (personalidad).
+- **Hardware opcional (gated):** `vibration_manager`, `sound_manager`, `battery_manager`.
 
 ---
 
@@ -104,20 +120,23 @@ access point to configure WiFi from your browser. Full guide in [`docs/wifi_port
 
 ---
 
-## 🗺️ Roadmap
+## 🗺️ Estado / Status
 
-El plan para que el Mochi pase de "carita animada" a compañero conectado:
-_The plan to grow the Mochi from "animated face" to a connected companion:_
+El roadmap (Fases 0–13) está **implementado**. Guía completa: [`docs/roadmap.md`](docs/roadmap.md).
+_The roadmap (Phases 0–13) is **implemented**. Full guide: [`docs/roadmap.md`](docs/roadmap.md)._
 
-| Fase / Phase | Objetivo / Goal |
-|--------------|-----------------|
-| **1** | 📶 WiFi + mostrar la **IP** en la OLED · _WiFi + show IP on the OLED_ |
-| **2** | 🕐 Obtener la **hora por NTP** · _Get time over NTP_ |
-| **3** | 😀 **Expresiones** según eventos · _Change expressions based on events_ |
-| **4** | ✋ Sensor **touch / piezo** · _Touch / piezo input_ |
-| **5** | 📳 **Motor vibrador** · _Vibration motor_ |
-| **6** | 🔋 **Batería 18650** con carga segura · _18650 battery with safe charging_ |
-| **7** | 🧊 **Carcasa tipo Mochi** · _Mochi-shaped enclosure_ |
+| Área / Area | Estado |
+|-------------|--------|
+| Arquitectura modular + portal cautivo WiFi | ✅ |
+| 33 caras/emociones + transiciones + secuencias | ✅ |
+| Panel web (estado, test, config, mensajes) | ✅ |
+| Botones + eventos + personalidad autónoma | ✅ |
+| MQTT / n8n (comandos, mensajes IA, estado) | ✅ código (`MQTT_ENABLED 1`) |
+| Vibrador / sonido / batería 18650 | ✅ código (flags `*_ENABLED`) |
+| Carcasa física tipo Mochi | ⏳ pendiente (impresión 3D) |
+
+> Las funciones de hardware traen el **código completo desactivado por flag**; se activan
+> en `config.h` cuando cableas el módulo correspondiente (ver [`docs/hardware.md`](docs/hardware.md)).
 
 ---
 

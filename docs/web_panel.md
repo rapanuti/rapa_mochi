@@ -17,13 +17,18 @@ muestra la OLED al arrancar). Ábrelo desde un dispositivo en la misma red.
    - **Guardar** en uno de los slots (con nombre), **reproducir** un slot guardado, o
      **probar** una secuencia sin guardarla.
 
-## Emociones disponibles
+## Emociones disponibles (33)
 
-`idle` (animación Mochi de 90 frames) · `happy` · `sad` · `surprised` · `angry` ·
+Base: `idle` (animación Mochi de 90 frames) · `happy` · `sad` · `surprised` · `angry` ·
 `sleepy` · `hot` · `cold` · `thinking` · `notification` · `error` · `wifi_ok` · `wifi_fail`
 
+Catálogo Dasai (Gen 3): `smile` · `laugh` · `uwu` · `raspberry` · `sakura` · `rainbow` ·
+`dumb_love` · `love` · `distracted` · `sneeze` · `squint` · `look_down` · `shift` · `bee` ·
+`gtr_rain` · `neon_tube` · `pong` · `rotation` · `gforce` · `splat`
+
 Las caras (excepto `idle`) se dibujan de forma **procedural** con primitivas gráficas
-(no usan imágenes), así que ocupan casi nada de memoria.
+(no usan imágenes). Varias son **animadas** (`sakura`, `bee`, `gtr_rain`, `pong`,
+`rotation`, `distracted`…). Al cambiar de emoción hay una **transición tipo parpadeo**.
 
 ## Notas
 

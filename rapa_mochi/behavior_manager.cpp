@@ -35,8 +35,9 @@ void behaviorUpdate(uint32_t now) {
 
   if ((int)random(0, 100) < BEHAVIOR_CHANCE) {
     static const Emotion moods[] = {
-      Emotion::HAPPY, Emotion::THINKING, Emotion::SLEEPY,
-      Emotion::SURPRISED, Emotion::HOT, Emotion::COLD,
+      Emotion::HAPPY, Emotion::THINKING, Emotion::SLEEPY, Emotion::SURPRISED,
+      Emotion::SMILE, Emotion::UWU, Emotion::SAKURA, Emotion::LOOK_DOWN,
+      Emotion::DISTRACTED, Emotion::LAUGH, Emotion::BEE,
     };
     const int N = sizeof(moods) / sizeof(moods[0]);
     emotionRequest(moods[random(0, N)]);   // respeta prioridad (force=false)

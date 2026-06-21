@@ -6,4 +6,4 @@
 #include <Arduino.h>
 #include "emotion_manager.h"   // enum Emotion
 
-void faceRender(Emotion e, uint32_t now);   // clear + dibuja la cara + flush
+void faceRender(Emotion e, uint32_t now);   // clear + dibuja la cara (el flush lo hace emotion_manager)

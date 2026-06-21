@@ -101,6 +101,12 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Cambiado
 
+- **20 caras nuevas del catálogo Dasai Mochi** (total 33): smile, laugh, uwu, raspberry,
+  sakura, rainbow, dumb_love, love, distracted, sneeze, squint, look_down, shift, bee,
+  gtr_rain, neon_tube, **pong** (juego animado), **rotation** (ojos girando), gforce, splat.
+  Varias **animadas** (pétalos, lluvia, abeja, pelota de pong, pupilas que giran).
+- **Transiciones entre emociones**: un breve **parpadeo** (párpados que cierran/abren)
+  suaviza el cambio de una cara a otra.
 - **Caras procedurales rediseñadas al estilo oficial Dasai Mochi (Gen 3)**: ojos como
   rectángulos verticales redondeados, ojos `^ ^` (happy), medio cerrados (sleepy), en `X`
   (error), lágrima (sad), gota de sudor (hot), y detalles `z`/`?`/`!`/`WiFi`. Basado en la
