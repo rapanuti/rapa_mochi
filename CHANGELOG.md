@@ -15,6 +15,16 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Bloque D — Integración con n8n / IA externa (Fase 13).**
+  - **Mensajes en pantalla** (`notice_manager`): muestra texto arbitrario en la OLED con
+    ajuste de línea, con prioridad sobre emoción/animación. Pensado para respuestas
+    generadas por IA fuera del ESP32.
+  - **Comandos MQTT**: `text:...` (mensaje), `seq:...` (secuencia), nombre de emoción, o
+    texto libre → se muestra. Disparables desde n8n / Home Assistant / Node-RED.
+  - **Estado y eventos hacia n8n**: `online` al conectar, **heartbeat** JSON cada 30 s
+    (uptime/emoción/IP/batería) y publicación de **eventos** (`event:button_1`,
+    `event:low_battery`, ...) en `MQTT_TOPIC_OUT`.
+  - Panel web: campo **"Mensaje en pantalla"**. Doc: [n8n_integration.md](docs/n8n_integration.md).
 - **Bloque C — Hardware opcional: MQTT, vibrador, sonido, batería (Fases 8–11).**
   Cada manager trae **código real completo** detrás de su flag (`MQTT_ENABLED`,
   `VIBRATION_ENABLED`, `SOUND_ENABLED`, `BATTERY_ENABLED`), **desactivado por defecto**:

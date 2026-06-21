@@ -44,8 +44,8 @@ De un sketch visual a un companion modular, configurable e interactivo.
 ## Fase 12 — Inteligencia simulada
 - Estados internos, reacciones automáticas, personalidad básica, rutinas por horario.
 
-## Fase 13 — Inteligencia real
-- Integración con n8n / API externa; mensajes y respuestas generadas por IA fuera del ESP32.
+## Fase 13 — Inteligencia real ✅ (código; activar con `MQTT_ENABLED 1`)
+- Integración con n8n / API externa vía MQTT: comandos (emoción/secuencia/texto), mensajes de IA mostrados en la OLED, y publicación de estado/eventos. Ver [n8n_integration.md](n8n_integration.md).
 
 ---
 

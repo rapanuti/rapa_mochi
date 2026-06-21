@@ -22,6 +22,7 @@
 // --- Emociones / secuencias / web (Bloque A) ---
 #include "emotion_manager.h"
 #include "sequence_manager.h"
+#include "notice_manager.h"
 
 // --- Botones / eventos / personalidad (Bloque B) ---
 #include "event_manager.h"
@@ -158,8 +159,9 @@ void loop() {
       eventUpdate(now);                        // reglas temporizadas (reservado)
       behaviorUpdate(now);                     // personalidad autonoma (Fase 12)
       emotionUpdate(now);                      // expira la emocion -> base
-      if (emotionActive()) emotionRender(now); // cara procedural (happy/sad/...)
-      else                 animRenderNext();   // animacion Mochi (idle, 90 frames)
+      if      (noticeActive(now)) noticeRender();    // mensaje (IA/n8n/web) tiene prioridad
+      else if (emotionActive())   emotionRender(now);// cara procedural (happy/sad/...)
+      else                        animRenderNext();  // animacion Mochi (idle, 90 frames)
 
       // Managers de hardware (no-op si su *_ENABLED es 0):
       mqttUpdate();

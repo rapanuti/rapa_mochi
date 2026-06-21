@@ -15,23 +15,28 @@
   #include "emotion_manager.h"
   #include "sequence_manager.h"
   #include "event_manager.h"
+  #include "notice_manager.h"
+  #include "battery_manager.h"
 
   static WiFiClient   net;
   static PubSubClient client(net);
-  static uint32_t     lastTry = 0;
+  static uint32_t     lastTry  = 0;
+  static uint32_t     lastBeat = 0;
 
   static void onMessage(char* topic, byte* payload, unsigned int len) {
     (void)topic;
     String msg;
     for (unsigned int i = 0; i < len; i++) msg += (char)payload[i];
     msg.trim();
-    if (msg.startsWith("seq:")) {
+    if (msg.startsWith("text:")) {               // mensaje (IA/n8n) -> se muestra en la OLED
+      noticeShow(msg.substring(5));
+    } else if (msg.startsWith("seq:")) {         // secuencia de emociones
       seqStop();
       seqPlayData(msg.substring(4));
     } else {
       Emotion e = emotionFromName(msg);
       if (e != Emotion::IDLE || msg.equalsIgnoreCase("idle")) { seqStop(); emotionRequest(e); }
-      else eventPost(EventType::MQTT_MESSAGE);   // texto libre -> notificacion
+      else noticeShow(msg);                       // texto libre -> se muestra como mensaje
     }
   }
 
@@ -58,6 +63,16 @@
   void mqttUpdate() {
     reconnect();
     client.loop();
+
+    // Heartbeat de estado hacia n8n cada 30 s (JSON simple).
+    if (client.connected() && millis() - lastBeat >= 30000) {
+      lastBeat = millis();
+      String s = String("{\"uptime\":") + (millis() / 1000)
+               + ",\"emotion\":\"" + emotionName(emotionCurrent()) + "\""
+               + ",\"ip\":\"" + WiFi.localIP().toString() + "\""
+               + ",\"battery\":" + batteryPercent() + "}";
+      client.publish(MQTT_TOPIC_OUT, s.c_str());
+    }
   }
 
   bool mqttPublish(const char* payload) {
