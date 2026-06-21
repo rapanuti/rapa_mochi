@@ -9,6 +9,8 @@
 #include "emotion_manager.h"
 #include "sequence_manager.h"
 #include "storage_manager.h"
+#include "event_manager.h"
+#include "behavior_manager.h"
 
 static WebServer web(80);
 static bool      started = false;
@@ -43,6 +45,13 @@ static String defaultEmotionOptions(Emotion sel) {
     if (e == sel) o += " selected";
     o += ">" + String(emotionName(e)) + "</option>";
   }
+  return o;
+}
+
+static String allEmotionOptions() {
+  String o;
+  for (uint8_t i = 0; i < (uint8_t)Emotion::COUNT; i++)
+    o += "<option value='" + String(emotionName((Emotion)i)) + "'>" + String(emotionName((Emotion)i)) + "</option>";
   return o;
 }
 
@@ -105,6 +114,30 @@ static String pageStatus() {
        "<button type='submit'>Probar</button></form>";
   h += "</fieldset>";
 
+  // --- Botones + personalidad ---
+  h += "<fieldset><legend><b>Botones y personalidad</b></legend>";
+  for (int b = 0; b < 3; b++) {
+    ActionType a = eventButtonActionType(b);
+    int p = eventButtonActionParam(b);
+    String cur = String(actionTypeName(a));
+    if (a == ActionType::EMOTION)       cur += " (" + String(emotionName((Emotion)p)) + ")";
+    else if (a == ActionType::SEQUENCE) cur += " (slot " + String(p) + ")";
+    h += "Boton " + String(b + 1) + ": <b>" + cur + "</b><br>";
+    h += "<form action='/btnset' method='GET'>"
+         "<input type='hidden' name='b' value='" + String(b) + "'>"
+         "accion <select name='a'>"
+         "<option value='none'>none</option><option value='emotion'>emotion</option>"
+         "<option value='sequence'>sequence</option><option value='status'>status</option></select> "
+         "emo <select name='emo'>" + allEmotionOptions() + "</select> "
+         "seq <select name='seq'>";
+    for (int s = 0; s < seqSlots(); s++) h += "<option value='" + String(s) + "'>" + String(s) + "</option>";
+    h += "</select> <button type='submit'>Set</button></form>";
+  }
+  h += "<p>Personalidad autonoma: <b>" + String(behaviorEnabled() ? "ON" : "OFF") + "</b> "
+       "<a class='btn' href='/behavior?on=1'>ON</a>"
+       "<a class='btn' href='/behavior?on=0'>OFF</a></p>";
+  h += "</fieldset>";
+
   h += "</body></html>";
   return h;
 }
@@ -156,6 +189,23 @@ static void handleSeqSave() {
   redirectHome();
 }
 
+static void handleBtnSet() {
+  if (web.hasArg("b") && web.hasArg("a")) {
+    int b = web.arg("b").toInt();
+    ActionType a = actionTypeFromName(web.arg("a"));
+    int p = 0;
+    if (a == ActionType::EMOTION)       p = (int)emotionFromName(web.arg("emo"));
+    else if (a == ActionType::SEQUENCE) p = web.arg("seq").toInt();
+    eventSetButtonAction(b, a, p);
+  }
+  redirectHome();
+}
+
+static void handleBehavior() {
+  if (web.hasArg("on")) behaviorSetEnabled(web.arg("on").toInt() != 0);
+  redirectHome();
+}
+
 void webBegin() {
   if (started) return;
   web.on("/", handleRoot);
@@ -165,6 +215,8 @@ void webBegin() {
   web.on("/seqplay", handleSeqPlay);
   web.on("/seqtest", handleSeqTest);
   web.on("/seqsave", handleSeqSave);
+  web.on("/btnset", handleBtnSet);
+  web.on("/behavior", handleBehavior);
   web.begin();
   started = true;
   Serial.print(F("[WEB] panel en http://")); Serial.println(WiFi.localIP());

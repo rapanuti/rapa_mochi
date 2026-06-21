@@ -15,6 +15,17 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Bloque B — Botones + Eventos + Personalidad (Fases 6, 7 y 12).**
+  - **Botones físicos** (`input_manager`, GPIO 25/26/27, `INPUT_PULLUP` + debounce +
+    detección de flanco). Activado por defecto; es seguro aunque no haya botones
+    conectados (leen HIGH). Cada botón tiene una **acción configurable** desde la web
+    (emoción / secuencia / estado), persistida en NVS.
+  - **Motor de eventos** (`event_manager`): despacha eventos (botones, wifi, piezo,
+    temperatura, batería baja, mqtt) a acciones. Reglas por defecto: wifi_connected→
+    wifi_ok, low_battery→sad, piezo_tap→surprised, etc.
+  - **Personalidad autónoma** (`behavior_manager`, Fase 12): estando tranquilo, el Mochi
+    de vez en cuando "siente" una emoción aleatoria (configurable ON/OFF desde la web).
+  - Panel web ampliado: configurar acción de cada botón y activar/desactivar la personalidad.
 - **Bloque A — Emociones + Panel web (Fases 4 y 5).**
   - **Sistema de emociones con caras procedurales** (`emotion_manager` + `face_renderer`):
     13 emociones (idle/happy/sad/surprised/angry/sleepy/hot/cold/thinking/notification/

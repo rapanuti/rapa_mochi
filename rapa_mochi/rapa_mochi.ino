@@ -23,9 +23,12 @@
 #include "emotion_manager.h"
 #include "sequence_manager.h"
 
-// --- Arquitectura preparada (stubs desactivados) ---
+// --- Botones / eventos / personalidad (Bloque B) ---
 #include "event_manager.h"
 #include "input_manager.h"
+#include "behavior_manager.h"
+
+// --- Arquitectura preparada (stubs desactivados) ---
 #include "mqtt_manager.h"
 #include "sound_manager.h"
 #include "vibration_manager.h"
@@ -72,9 +75,12 @@ void setup() {
   seqBegin();
   emotionSetDefault(emotionFromName(storageGetString("defemo", "idle")));
 
-  // Managers preparados (no-op mientras esten desactivados):
+  // Botones + eventos + personalidad (Bloque B):
   eventBegin();
   inputBegin();
+  behaviorBegin();
+
+  // Managers de hardware (no-op mientras esten desactivados):
   mqttBegin();
   soundBegin();
   vibrationBegin();
@@ -136,17 +142,25 @@ void loop() {
     case BOOT_WIFI_INFO:                       // "WiFi OK" + IP unos segundos
       if (now - tEstado >= WIFI_INFO_MS) {
         if (wifiIsConnected()) webBegin();     // arranca el panel web (puerto 80)
+        inputJustPressed(0); inputJustPressed(1); inputJustPressed(2);  // descarta flancos del arranque
         bootState = RUN_IDLE;
       }
       break;
 
     case RUN_IDLE:                             // estado normal
+      // Botones fisicos -> eventos -> acciones (emocion/secuencia)
+      if (inputJustPressed(0)) eventPost(EventType::BUTTON_1_PRESSED);
+      if (inputJustPressed(1)) eventPost(EventType::BUTTON_2_PRESSED);
+      if (inputJustPressed(2)) eventPost(EventType::BUTTON_3_PRESSED);
+
       if (wifiIsConnected()) webUpdate();      // atiende el panel web
       seqUpdate(now);                          // avanza la secuencia si hay una
+      eventUpdate(now);                        // reglas temporizadas (reservado)
+      behaviorUpdate(now);                     // personalidad autonoma (Fase 12)
       emotionUpdate(now);                      // expira la emocion -> base
       if (emotionActive()) emotionRender(now); // cara procedural (happy/sad/...)
       else                 animRenderNext();   // animacion Mochi (idle, 90 frames)
-      // Futuro: eventUpdate(now); mqttUpdate(); soundUpdate(); vibrationUpdate(); batteryUpdate();
+      // Futuro: mqttUpdate(); soundUpdate(); vibrationUpdate(); batteryUpdate();
       break;
   }
 }
