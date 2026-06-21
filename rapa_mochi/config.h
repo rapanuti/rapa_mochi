@@ -62,6 +62,12 @@
 #define SOUND_PWM_PIN       14         // buzzer pasivo / PAM8403 (ledcWriteTone)
 #define BATTERY_ADC_PIN     34         // ADC1, input-only, seguro con WiFi ON
 
+// --- Bateria (cuando BATTERY_ENABLED 1) ---
+#define BATTERY_DIVIDER     2.0f       // factor del divisor resistivo (2x100k => x2)
+#define BATTERY_MIN_MV      3300       // 0%  (18650 ~3.3V)
+#define BATTERY_MAX_MV      4200       // 100% (18650 ~4.2V)
+#define BATTERY_LOW_PCT     15         // umbral de "bateria baja" -> evento
+
 // --- MQTT (futuro; solo se usa si MQTT_ENABLED 1) ---
 #define MQTT_SERVER         "192.168.1.100"
 #define MQTT_PORT           1883
