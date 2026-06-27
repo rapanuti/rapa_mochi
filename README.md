@@ -39,10 +39,12 @@ here is explained step by step.
 
 - 🐱 **Animación Mochi** (90 cuadros, 128×64) + **33 caras/emociones** procedurales con
   **transiciones tipo parpadeo** (varias animadas: pong, ojos girando, pétalos, lluvia…).
-- 📶 **Portal cautivo WiFi** propio (AP `RapaMochi_Setup`) — sin librerías externas.
-- 🖥️ **Panel web local**: estado del dispositivo, probar emociones, secuencias, emoción
-  por defecto, configurar botones y enviar mensajes a la pantalla.
-- 🎬 **Secuencias** de emociones con nombre (guardadas en NVS).
+- 🖥️ **Panel web estilo macOS**: estado del dispositivo, **probar las 33 emociones con
+  miniatura** de cada cara, **constructor visual de secuencias** (en bucle), emoción por
+  defecto, **modo demo**, botones, mensajes en pantalla y **gestión de WiFi**.
+- 📶 **WiFi**: portal cautivo propio (`RapaMochi_Setup`) con **escáner de redes**, y también
+  cambiar de red **desde el panel**. Al arrancar, **cara de WiFi + IP** en la OLED.
+- 🎬 **Secuencias** de emociones con nombre, guardadas en NVS, reproducibles en **bucle**.
 - 🔘 **3 botones** configurables + **personalidad autónoma** (reacciones espontáneas).
 - 🔗 **MQTT / n8n / Home Assistant**: comandos y mensajes de IA, publicación de estado/eventos.
 - 🔌 **Vibrador, sonido y batería 18650**: código listo, activable por flags.
@@ -109,14 +111,35 @@ hit **Upload**.
 
 ---
 
+## 🖥️ Panel web / Web panel
+
+Cuando el Mochi está conectado a tu WiFi, sirve un panel en **`http://<IP>`** (la IP sale
+en la OLED al arrancar). Desde ahí controlas casi todo:
+
+- **Estado**: IP, WiFi, memoria libre, uptime, versión, emoción actual.
+- **Probar emoción**: las 33 caras, cada una con su **miniatura** (vista previa real de la
+  OLED). Al pulsar, se queda fija hasta que elijas otra.
+- **Configuración**: emoción por defecto y saludo inicial on/off.
+- **WiFi**: red actual, **cambiar de red** (SSID + contraseña) u **olvidar red** (abre el portal).
+- **Secuencias**: **constructor visual** (eliges emoción + tiempo 5/10/15/20 s) que se guarda
+  y reproduce en **bucle**.
+- **Botones y personalidad**: acción de cada botón, **personalidad autónoma** y **modo demo**.
+- **Mensaje en pantalla**: texto centrado en la OLED (también por MQTT con `text:...`).
+
+Guía completa en [`docs/web_panel.md`](docs/web_panel.md).
+
+---
+
 ## 📶 WiFi (portal cautivo)
 
-Al arrancar, el Mochi intenta conectarse a la red guardada; si no hay o falla, abre un
-Access Point **`RapaMochi_Setup`** para configurarla desde el navegador (lista de redes +
-contraseña). Guía completa en [`docs/wifi_portal.md`](docs/wifi_portal.md).
+Al arrancar, el Mochi intenta conectarse a la red guardada; si no hay o falla, muestra
+**"Creando red"** y abre un Access Point **`RapaMochi_Setup`** para configurarla desde el
+navegador (**escáner de redes** + contraseña). También puedes cambiar de red **desde el
+panel web**. Guía completa en [`docs/wifi_portal.md`](docs/wifi_portal.md).
 
-_On boot the Mochi tries the saved network; if none/fails it opens a **`RapaMochi_Setup`**
-access point to configure WiFi from your browser. Full guide in [`docs/wifi_portal.md`](docs/wifi_portal.md)._
+_On boot the Mochi tries the saved network; if none/fails it shows **"Creating network"**
+and opens a **`RapaMochi_Setup`** access point (with a **network scanner**). You can also
+change networks **from the web panel**. Full guide in [`docs/wifi_portal.md`](docs/wifi_portal.md)._
 
 ---
 
