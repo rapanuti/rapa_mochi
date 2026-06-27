@@ -64,6 +64,15 @@ here is explained step by step.
 | SCL / SCK | **GPIO22** |
 | Alimentación / Power | **3V3** y **GND** |
 
+### 📐 Diagramas de conexión / Wiring diagrams
+
+Montaje actual (ESP32 + OLED + 3 sensores táctiles TTP223):
+
+![Montaje actual: OLED + 3 táctiles](docs/img/02-montaje-oled-3-tactiles.png)
+
+Todos los diagramas (OLED, táctiles, vibrador, sonido, batería) y el plano paso a paso
+están en **[`docs/wiring.md`](docs/wiring.md)**.
+
 ---
 
 ## 📂 Estructura del repo / Repo layout
