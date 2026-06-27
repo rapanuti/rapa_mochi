@@ -38,11 +38,17 @@
 // que pulses otra). Pon un valor en ms (p.ej. 9000) si la quieres temporal.
 #define WEB_TEST_MS         0
 
-// --- Botones fisicos (GPIO 25/26/27 limpios, soportan INPUT_PULLUP) ---
+// --- Botones / sensores tactiles (GPIO 25/26/27) ---
 #define BUTTON_1            25
 #define BUTTON_2            26
 #define BUTTON_3            27
 #define BTN_DEBOUNCE_MS     40
+
+// Tipo de entrada:
+//   TTP223 (tactil, por defecto): USE_PULLUP 0 + ACTIVE_HIGH 1
+//   Boton normal a GND:           USE_PULLUP 1 + ACTIVE_HIGH 0
+#define BUTTON_USE_PULLUP   0   // 1 = boton a GND (pull-up interno); 0 = el sensor maneja la linea
+#define BUTTON_ACTIVE_HIGH  1   // 1 = TTP223 (tocar = ALTO); 0 = boton a GND (presionar = BAJO)
 
 // --- Comportamiento autonomo / personalidad (Fase 12) ---
 #define BEHAVIOR_TICK_MS    8000     // cada cuanto el Mochi "decide" algo estando idle

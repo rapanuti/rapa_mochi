@@ -26,7 +26,7 @@
 |---------|-----|------|
 | I2C SDA / SCL | 21 / 22 | OLED (no cambiar) |
 | LED estado | 2 | LED azul integrado |
-| Botón 1 / 2 / 3 | 25 / 26 / 27 | `INPUT_PULLUP`, LOW = presionado (futuro) |
+| Táctil/Botón 1/2/3 | 25 / 26 / 27 | **TTP223** (tocar = ALTO, `INPUT_PULLDOWN`) o botón a GND |
 | Vibrador | 13 | vía MOSFET/transistor (futuro) |
 | Sonido PWM | 14 | buzzer pasivo / PAM8403 (futuro) |
 | Batería ADC | 34 | ADC1, input-only (futuro) |
