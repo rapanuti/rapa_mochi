@@ -40,6 +40,8 @@ Esquemas de cableado del Rapa Mochi sobre **ESP32-WROOM-32 (ESP32 Dev Module)**.
 
 ## 1) OLED SSD1306 128×64 I2C  ✅ (necesaria para la primera prueba)
 
+![Primera prueba: ESP32 + OLED SSD1306](img/01-primera-prueba-oled.png)
+
 ```
    ESP32                         OLED SSD1306 (I2C, dir 0x3C)
    ┌──────┐                      ┌──────────────────┐
@@ -56,6 +58,8 @@ Eso es todo lo necesario para ver las caras del Mochi. Si tu módulo trae el pin
 ---
 
 ## Montaje actual (OLED + 3 táctiles)  📋
+
+![Montaje actual: OLED + 3 táctiles TTP223](img/02-montaje-oled-3-tactiles.png)
 
 Plano de **lo que tienes conectado ahora**, alimentando por **USB**. Fíjate que **3V3** y
 **GND** son rieles **compartidos** (la OLED y los 3 sensores cuelgan de los mismos dos pines):
@@ -141,6 +145,8 @@ Sensores **capacitivos TTP223** (los rojos que dicen `TOUCH`). Cada uno tiene 3 
 ---
 
 ## 3) Vibrador  — opcional (`VIBRATION_ENABLED 1`)
+
+![Vibrador seguro con transistor NPN y diodo](img/03-vibrador-transistor.png)
 
 ⚠️ El motor **nunca** va directo al GPIO. Usa un **transistor NPN** (p. ej. 2N2222) o un
 **MOSFET de nivel lógico** (p. ej. 2N7000 / IRLZ44N) y un **diodo flyback** (1N4001) en
