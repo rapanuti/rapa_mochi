@@ -55,20 +55,88 @@ Eso es todo lo necesario para ver las caras del Mochi. Si tu módulo trae el pin
 
 ---
 
-## 2) Botones (×3)  — opcional (`INPUT_ENABLED 1`, ya activado)
+## Montaje actual (OLED + 3 táctiles)  📋
 
-Cada botón conecta su GPIO a **GND**. El pull-up interno mantiene el pin en ALTO; al
-pulsar baja a BAJO (LOW = presionado). **No** hace falta resistencia externa.
+Plano de **lo que tienes conectado ahora**, alimentando por **USB**. Fíjate que **3V3** y
+**GND** son rieles **compartidos** (la OLED y los 3 sensores cuelgan de los mismos dos pines):
 
 ```
-   G25 ──────────[  BOTÓN 1  ]──────────┐
-   G26 ──────────[  BOTÓN 2  ]──────────┤
-   G27 ──────────[  BOTÓN 3  ]──────────┤
-                                        │
-                                       GND
+        ┌──────────────── ESP32-WROOM-32 (DevKit) ────────────────┐
+  USB ──┤ (alimentacion / programacion)                           │
+        │                                                          │
+        │  3V3 ──┬── OLED VCC                                      │
+        │        ├── TTP223(1) VCC ── TTP223(2) VCC ── TTP223(3) VCC   (riel +3V3)
+        │        │                                                 │
+        │  GND ──┬── OLED GND                                      │
+        │        ├── TTP223(1) GND ── TTP223(2) GND ── TTP223(3) GND   (riel GND)
+        │        │                                                 │
+        │  G21 ───── OLED SDA                                      │
+        │  G22 ───── OLED SCL                                      │
+        │                                                          │
+        │  G25 ───── TTP223(1) I/O   (toque 1)                     │
+        │  G26 ───── TTP223(2) I/O   (toque 2)                     │
+        │  G27 ───── TTP223(3) I/O   (toque 3)                     │
+        │                                                          │
+        │  G2  ───── LED azul (integrado en la placa)             │
+        └──────────────────────────────────────────────────────────┘
 ```
 
-> Si NO conectas botones, no pasa nada: los pines quedan en ALTO y nunca se "pulsan".
+> 💡 "Riel compartido" = puedes llevar un solo cable de **3V3** a una fila de la protoboard
+> y de ahí repartir a OLED + 3 sensores; igual con **GND**. Las **señales** (SDA, SCL y los
+> 3 I/O) sí van **cada una a su pin**.
+
+---
+
+## 2) Sensores táctiles TTP223 (×3)  — `INPUT_ENABLED 1` (ya activado)
+
+Sensores **capacitivos TTP223** (los rojos que dicen `TOUCH`). Cada uno tiene 3 pines:
+**VCC**, **GND** e **I/O** (salida). Al tocar el círculo, la salida se pone en **ALTO**.
+
+### Cómo conectarlos: alimentación en PARALELO, señales SEPARADAS (no en serie)
+
+- **VCC**: los 3 VCC van **juntos** al **3V3** del ESP32 (mismo riel).
+- **GND**: los 3 GND van **juntos** al **GND** del ESP32 (mismo riel).
+- **I/O**: cada salida va a **su propio GPIO** (25, 26, 27) — así se distinguen los 3 toques.
+
+```
+   ESP32 3V3 ──┬─────────┬─────────┬──────   (VCC de los 3, en paralelo)
+               │         │         │
+              VCC       VCC       VCC
+           ┌────────┐┌────────┐┌────────┐
+           │ TTP223 ││ TTP223 ││ TTP223 │
+           │  (1)   ││  (2)   ││  (3)   │
+           └────────┘└────────┘└────────┘
+              GND       GND       GND
+               │         │         │
+   ESP32 GND ──┴─────────┴─────────┴──────   (GND de los 3, en paralelo)
+
+              I/O       I/O       I/O
+               │         │         │
+             GPIO25    GPIO26    GPIO27        (una señal por pin)
+```
+
+| TTP223 | ESP32 |
+|--------|-------|
+| VCC (los 3) | **3V3** |
+| GND (los 3) | **GND** |
+| I/O sensor 1 | **GPIO25** |
+| I/O sensor 2 | **GPIO26** |
+| I/O sensor 3 | **GPIO27** |
+
+### Configuración en `config.h`
+
+```cpp
+#define BUTTON_USE_PULLUP   0   // TTP223: el sensor maneja la linea
+#define BUTTON_ACTIVE_HIGH  1   // TTP223: tocar = ALTO
+```
+
+> El firmware usa `INPUT_PULLDOWN` en esos pines: si un sensor no está conectado, el pin
+> queda en BAJO y **no** dispara toques falsos. Cada toque ejecuta la acción que le
+> asignes a ese "botón" en el panel web.
+>
+> Pads **A/B** del TTP223 (opcional): **A** = modo *toggle*; **B** = invierte a activo en
+> BAJO (entonces usa `BUTTON_ACTIVE_HIGH 0`). Por defecto (sin soldar) = toque momentáneo
+> activo en ALTO, que es lo que espera la config de arriba.
 
 ---
 

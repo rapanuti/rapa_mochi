@@ -11,12 +11,17 @@ static bool          justP[3]      = { false, false, false };
 static uint32_t      lastChange[3] = { 0, 0, 0 };
 
 void inputBegin() {
-  for (int i = 0; i < 3; i++) pinMode(PINS[i], INPUT_PULLUP);  // LOW = presionado
+  for (int i = 0; i < 3; i++) {
+    if (BUTTON_USE_PULLUP)        pinMode(PINS[i], INPUT_PULLUP);    // boton a GND
+    else if (BUTTON_ACTIVE_HIGH)  pinMode(PINS[i], INPUT_PULLDOWN);  // TTP223: flotante/idle = BAJO
+    else                          pinMode(PINS[i], INPUT);
+  }
 }
 
 void inputUpdate(uint32_t now) {
+  const int active = BUTTON_ACTIVE_HIGH ? HIGH : LOW;   // nivel que cuenta como "presionado"
   for (int i = 0; i < 3; i++) {
-    bool down = (digitalRead(PINS[i]) == LOW);
+    bool down = (digitalRead(PINS[i]) == active);
     if (down != pressed[i] && (now - lastChange[i]) >= BTN_DEBOUNCE_MS) {
       pressed[i]    = down;
       lastChange[i] = now;

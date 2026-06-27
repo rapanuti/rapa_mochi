@@ -15,6 +15,11 @@ changelog corresponde a una o varias de esas ramas ya integradas.
 
 ### Añadido
 
+- **Soporte para sensores táctiles TTP223**: nuevos flags `BUTTON_USE_PULLUP` y
+  `BUTTON_ACTIVE_HIGH` en `config.h`; `input_manager` usa `INPUT_PULLDOWN` y detecta
+  "tocar = ALTO" (config por defecto del TTP223), sin perder compatibilidad con botones a
+  GND. Diagrama de conexión (alimentación en paralelo, señales separadas) y plano del
+  montaje actual en [docs/wiring.md](docs/wiring.md).
 - **WiFi desde el panel principal**: tarjeta "WiFi" con la red actual, cambiar de red
   (SSID + contraseña → guardar y reiniciar) y "olvidar red" (reinicia y abre el portal
   con el escáner de redes). Ya no hace falta forzar el portal para cambiar de WiFi.
